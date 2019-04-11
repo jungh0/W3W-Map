@@ -86,4 +86,8 @@ public class Collection  {
         return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
     }
 
+    public static String split_(String m, String s1 ,int c1 ,String s2, int c2) {
+            return m.split(s1)[c1].split(s2)[c2];
+    }
+
 }

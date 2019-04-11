@@ -8,9 +8,6 @@
     android:layout_height="match_parent"
     tools:context=".MapsActivity">
 
-
-
-
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         xmlns:sothree="http://schemas.android.com/apk/res-auto"
         android:clickable="true"
@@ -42,21 +39,16 @@
                     android:layout_height="60dp"
                     android:orientation="vertical">
 
-                    <com.wang.avi.AVLoadingIndicatorView
-                        android:id="@+id/load"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerInParent="true"/>
-
-                    <TextView
-                        android:id="@+id/word_three"
+                    <EditText
+                        android:id="@+id/search"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
+                        android:background="@null"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
-                        android:text="TEXT"
+                        android:imeOptions="actionSearch"
+                        android:text=""
                         android:textSize="20sp" />
 
                 </RelativeLayout>
@@ -73,22 +65,14 @@
                 card_view:backgroundTint="#ffffff" />
         </fragment>
 
-
         <RelativeLayout
+            android:id="@+id/card_up"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/sad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:text="Slide Up Panel"
-                android:textSize="20sp" />
-
         </RelativeLayout>
+
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 

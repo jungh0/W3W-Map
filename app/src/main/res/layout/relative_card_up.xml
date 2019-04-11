@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginBottom="20dp">
+
+    <TextView
+        android:id="@+id/w3w_t"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:text="---.---.---"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/country"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/w3w_t"
+        android:layout_alignLeft="@+id/w3w_t"
+        android:layout_marginTop="15dp"
+        android:textSize="20sp"
+        android:text="국가 : " />
+
+    <TextView
+        android:id="@+id/country_t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/w3w_t"
+        android:layout_toRightOf="@+id/country"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp"
+        android:textSize="20sp"
+        android:text="---" />
+
+    <TextView
+        android:id="@+id/nearestPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/country"
+        android:layout_alignLeft="@+id/w3w_t"
+        android:layout_marginTop="10dp"
+        android:text="가까운 장소 : "
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/nearestPlace_t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/country_t"
+        android:layout_toRightOf="@+id/nearestPlace"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:textSize="20sp"
+        android:text="---" />
+
+    <TextView
+        android:id="@+id/longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nearestPlace"
+        android:layout_alignStart="@+id/w3w_t"
+        android:layout_marginTop="10dp"
+        android:text="경도 : "
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/longitude_t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/longitude"
+        android:layout_toRightOf="@+id/longitude"
+        android:layout_marginLeft="5dp"
+        android:text="---"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/longitude"
+        android:layout_alignStart="@+id/w3w_t"
+        android:layout_marginTop="10dp"
+        android:text="위도 : "
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/latitude_t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/latitude"
+        android:layout_toRightOf="@+id/latitude"
+        android:layout_marginLeft="5dp"
+        android:text="---"
+        android:textSize="20sp"/>
+
+
+</RelativeLayout>

@@ -30,10 +30,17 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,9 +61,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.pepperonas.materialdialog.MaterialDialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.valdesekamdem.library.mdtoast.MDToast;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -81,9 +88,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String TAG = "w3w_";
     private FusedLocationProviderClient fusedLocationClient;
 
-    TextView word_3;
-    AVLoadingIndicatorView loading;
-
+    TextView word_3, country, nearest, longitude_t, latitude_t ;
+    EditText search;
+    RelativeLayout card_up;
+    String w3w_apikey = "CD39RHMH";
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -92,27 +100,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_maps);
 
-        //getSupportActionBar().hide();
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         Collection.init_network();
-        word_3 = (TextView) findViewById(R.id.word_three);
-        loading = (AVLoadingIndicatorView) findViewById(R.id.load) ;
-        loading.setIndicatorColor(Color.rgb(40,40,40));
+        card_up = (RelativeLayout) findViewById(R.id.card_up);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.relative_card_up, card_up, true);
+        word_3 = (TextView) card_up.findViewById(R.id.w3w_t);
+        country = (TextView) card_up.findViewById(R.id.country_t);
+        nearest = (TextView) card_up.findViewById(R.id.nearestPlace_t);
+        longitude_t = (TextView) card_up.findViewById(R.id.longitude_t);
+        latitude_t = (TextView) card_up.findViewById(R.id.latitude_t);
+        search = (EditText) findViewById(R.id.search);
 
-        final SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-        mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+        //검색 엔터키 눌렀을 때
+        search.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-                Log.i(TAG, "onPanelSlide, offset " + slideOffset);
-            }
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                Log.i(TAG, "onPanelStateChanged " + newState);
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    keyboard_search();
+                    return true;
+                }
+                return false;
             }
         });
+
+        //슬라이드 업 패널 리스너
+        final SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mLayout.setFadeOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,15 +135,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-    }
-
-    public int getStatusBarHeight()
-    {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0)
-            result = getResources().getDimensionPixelSize(resourceId);
-        return result;
     }
 
     @Override
@@ -164,8 +170,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //인터넷 연결 없을 시 기본 서울로 지정
     public void setDefaultLocation() {
-        markerMap(mGoogleMap,37.56,126.97);
-        moveMap(mGoogleMap,37.56,126.97);
+        markerMap(mGoogleMap,37.450989,127.127156);
+        moveMap(mGoogleMap,37.450989,127.127156);
     }
 
     //사용자 현재 위치
@@ -183,7 +189,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Double longitude = location.getLongitude();
                     markerMap(mGoogleMap,latitude,longitude);
                     moveMap(mGoogleMap,latitude,longitude);
+                }else{
+                    ToastMD(getApplicationContext(),"현재위치를 찾을 수 없습니다.",3);
+                    setDefaultLocation();
                 }
+
             }
         });
     }
@@ -206,23 +216,99 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap.clear();
         mGoogleMap.addMarker(mOptions);
 
-        word_3.setText("");
-        loading.setVisibility(View.VISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                String get_w3w = Collection.gethttp(getApplicationContext(),"https://api.what3words.com/v3/convert-to-3wa?coordinates=" + latitude + "%2C" + longitude + "&key=CD39RHMH&language=ko");
+                word_3.setText("");
+                String get_w3w = Collection.gethttp(getApplicationContext(),"https://api.what3words.com/v3/convert-to-3wa?coordinates=" + latitude + "%2C" + longitude + "&key=" + w3w_apikey + "&language=ko");
                 try{
                     String word_parse = get_w3w.split("\"words\":\"")[1].split("\"")[0];
                     word_3.setText(word_parse);
-                    loading.setVisibility(View.INVISIBLE);
+                    word_parse = get_w3w.split("\"country\":\"")[1].split("\"")[0];
+                    country.setText(word_parse);
+                    word_parse = get_w3w.split("\"nearestPlace\":\"")[1].split("\"")[0];
+                    nearest.setText(word_parse);
+                    word_parse = get_w3w.split("\"lng\":")[3].split(",")[0];
+                    longitude_t.setText(word_parse);
+                    word_parse = get_w3w.split("\"lat\":")[3].split("\\}")[0];
+                    latitude_t.setText(word_parse);
                 }catch(Exception e){
-                    word_3.setText("인터넷 접속 실패");
-                    loading.setVisibility(View.INVISIBLE);
+                    word_3.setText("API 오류");
                 }
             }
-        }, 1000);
+        }, 0);
     }
 
+    public void keyboard_search() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(search, 0);
+        imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String get_w3w = Collection.gethttp(getApplicationContext(),"https://api.what3words.com/v3/autosuggest?key=" + w3w_apikey + "&input=" + search.getText().toString() + "&n-results=5");
+                try{
+                    String[] get_s = get_w3w.split("\"country\":\"");
+                    int cnt = get_s.length;
+                    String[] get_w = new String[cnt - 2];
+                    String[] get_d = new String[cnt - 2];
+                    for (int i = 0 ; i< cnt - 2; i++){
+                        get_w[i] = get_s[i+1].split("\"words\":\"")[1].split("\"")[0];
+                        get_d[i] = get_w[i] + " - " +get_s[i+1].split("\"")[0];
+                        get_d[i] = get_d[i] + " - " + get_s[i+1].split("\"nearestPlace\":\"")[1].split("\"")[0];
+                    }
+                    showMaterialDialogList(get_w,get_d);
+                }catch(Exception e){
+                    ToastMD(getApplicationContext(), "오류",3);
+                }
+            }
+        }, 0);
+    }
+
+
+    private void showMaterialDialogList(final String[] list,final String[] list2) {
+        new MaterialDialog.Builder(this)
+                .title("MaterialDialog")
+                .negativeText("CANCEL")
+                .negativeColor(R.color.pink_500)
+                .listItems(false, list2)
+                .itemSelectedListener(new MaterialDialog.ItemSelectedListener() {
+                    @Override
+                    public void onSelected(View view, int position, long id) {
+                        super.onSelected(view, position, id);
+                    }
+                })
+                .itemClickListener(new MaterialDialog.ItemClickListener() {
+                    @Override
+                    public void onClick(View v, final int position, long id) {
+                        super.onClick(v, position, id);
+                        //ToastMD(getApplicationContext(), "onClick (" + list[position] + ")",3);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                String get_w3w = Collection.gethttp(getApplicationContext(),"https://api.what3words.com/v3/convert-to-coordinates?key=" + w3w_apikey + "&words=" + list[position] + "&format=json");
+                                try{
+                                    //ToastMD(getApplicationContext(),get_w3w,3);
+                                    Double longitude = Double.parseDouble(get_w3w.split("\"lng\":")[3].split(",")[0]);
+                                    Double latitude = Double.parseDouble(get_w3w.split("\"lat\":")[3].split("\\}")[0]);
+                                    //ToastMD(getApplicationContext(), Double.toString(longitude),3);
+                                    markerMap(mGoogleMap,latitude,longitude);
+                                    moveMap(mGoogleMap,latitude,longitude);
+                                }catch(Exception e){
+                                    ToastMD(getApplicationContext(), "오류",3);
+                                }
+                            }
+                        }, 0);
+                    }
+                })
+                .buttonCallback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                    }
+                })
+                .show();
+    }
 
 }
