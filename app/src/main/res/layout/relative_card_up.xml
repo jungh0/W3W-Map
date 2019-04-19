@@ -1,104 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="15dp"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
-    android:layout_marginBottom="20dp">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:background="#00000000"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/w3w_t"
+    <FrameLayout
+        android:id="@+id/willgone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:text="---.---.---"
-        android:textSize="25sp" />
+        android:background="#00FFFFFF">
 
-    <TextView
-        android:id="@+id/country"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/w3w_t"
-        android:layout_alignLeft="@+id/w3w_t"
-        android:layout_marginTop="15dp"
-        android:textSize="20sp"
-        android:text="국가 : " />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/kakao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="25dp"
+            android:clickable="true"
+            android:src="@drawable/kakao"
+            card_view:backgroundTint="#F8D600"
+            android:layout_gravity="end|top"/>
 
-    <TextView
-        android:id="@+id/country_t"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/w3w_t"
-        android:layout_toRightOf="@+id/country"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="5dp"
-        android:textSize="20sp"
-        android:text="---" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/sms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="100dp"
+            android:clickable="true"
+            android:src="@drawable/sms"
+            android:layout_gravity="end|top"
+            card_view:backgroundTint="#3AB10A" />
 
-    <TextView
-        android:id="@+id/nearestPlace"
-        android:layout_width="wrap_content"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/hangout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="175dp"
+            android:clickable="true"
+            android:src="@drawable/sms"
+            android:layout_gravity="end|top"
+            card_view:backgroundTint="#0095D9" />
+
+    </FrameLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_below="@+id/willgone"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/country"
-        android:layout_alignLeft="@+id/w3w_t"
+        card_view:cardCornerRadius="15dp"
         android:layout_marginTop="10dp"
-        android:text="가까운 장소 : "
-        android:textSize="20sp"/>
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        card_view:cardElevation="20dp"
+        android:padding="10dp">
 
-    <TextView
-        android:id="@+id/nearestPlace_t"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/country_t"
-        android:layout_toRightOf="@+id/nearestPlace"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:textSize="20sp"
-        android:text="---" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:src="@drawable/copy"
+            card_view:backgroundTint="#FFFFFFFF"
+            android:layout_gravity="end|top"/>
 
-    <TextView
-        android:id="@+id/longitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nearestPlace"
-        android:layout_alignStart="@+id/w3w_t"
-        android:layout_marginTop="10dp"
-        android:text="경도 : "
-        android:textSize="20sp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp">
 
-    <TextView
-        android:id="@+id/longitude_t"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/longitude"
-        android:layout_toRightOf="@+id/longitude"
-        android:layout_marginLeft="5dp"
-        android:text="---"
-        android:textSize="20sp"/>
 
-    <TextView
-        android:id="@+id/latitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/longitude"
-        android:layout_alignStart="@+id/w3w_t"
-        android:layout_marginTop="10dp"
-        android:text="위도 : "
-        android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/w3w_t"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:text="---.---.---"
+                android:textSize="25sp" />
 
-    <TextView
-        android:id="@+id/latitude_t"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/latitude"
-        android:layout_toRightOf="@+id/latitude"
-        android:layout_marginLeft="5dp"
-        android:text="---"
-        android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/w3w_t"
+                android:layout_alignLeft="@+id/w3w_t"
+                android:layout_marginTop="15dp"
+                android:textSize="20sp"
+                android:text="가까운 장소 : " />
 
+            <TextView
+                android:id="@+id/country_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/w3w_t"
+                android:layout_toRightOf="@+id/country"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:textSize="20sp"
+                android:text="---" />
+
+            <TextView
+                android:id="@+id/nearestPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/country"
+                android:layout_alignLeft="@+id/w3w_t"
+                android:layout_marginTop="10dp"
+                android:text="국가 : "
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/nearestPlace_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/country_t"
+                android:layout_toRightOf="@+id/nearestPlace"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:textSize="20sp"
+                android:text="---" />
+
+            <TextView
+                android:id="@+id/longitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nearestPlace"
+                android:layout_alignStart="@+id/w3w_t"
+                android:layout_marginTop="10dp"
+                android:text="경도 : "
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/longitude_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/longitude"
+                android:layout_toRightOf="@+id/longitude"
+                android:layout_marginLeft="5dp"
+                android:text="---"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/latitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/longitude"
+                android:layout_alignStart="@+id/w3w_t"
+                android:layout_marginTop="10dp"
+                android:text="위도 : "
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/latitude_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/latitude"
+                android:layout_toRightOf="@+id/latitude"
+                android:layout_marginLeft="5dp"
+                android:text="---"
+                android:textSize="20sp"/>
+
+        </RelativeLayout>
+
+
+
+
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>
+

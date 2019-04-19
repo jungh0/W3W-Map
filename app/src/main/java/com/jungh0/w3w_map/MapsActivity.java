@@ -29,6 +29,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
@@ -36,10 +37,12 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -91,6 +94,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     TextView word_3, country, nearest, longitude_t, latitude_t ;
     EditText search;
     RelativeLayout card_up;
+    FrameLayout willgone;
     String w3w_apikey = "CD39RHMH";
 
     @SuppressLint("RestrictedApi")
@@ -100,6 +104,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_maps);
 
+        getSupportActionBar().hide();
+        /*
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(Color.parseColor("#2A2A2A"));
+        }*/
+
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -108,11 +119,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.relative_card_up, card_up, true);
         word_3 = (TextView) card_up.findViewById(R.id.w3w_t);
-        country = (TextView) card_up.findViewById(R.id.country_t);
-        nearest = (TextView) card_up.findViewById(R.id.nearestPlace_t);
+        country = (TextView) card_up.findViewById(R.id.nearestPlace_t);
+        nearest = (TextView) card_up.findViewById(R.id.country_t);
         longitude_t = (TextView) card_up.findViewById(R.id.longitude_t);
         latitude_t = (TextView) card_up.findViewById(R.id.latitude_t);
         search = (EditText) findViewById(R.id.search);
+        willgone = (FrameLayout) card_up.findViewById(R.id.willgone);
 
         //검색 엔터키 눌렀을 때
         search.setOnKeyListener(new View.OnKeyListener() {
@@ -134,6 +146,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
+        willgone.setVisibility(View.GONE);
+        mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                //Log.i(TAG, "onPanelSlide, offset " + slideOffset);
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                Log.i(TAG, "onPanelStateChanged " + newState);
+                String tmp = newState.toString();
+                String tmp2 = previousState.toString();
+                if(tmp.equals("DRAGGING")){
+                    if(tmp2.equals("EXPANDED")){
+                        willgone.setVisibility(View.GONE);
+                    }
+                }
+                else if(tmp.equals("EXPANDED")){
+                    willgone.setVisibility(View.VISIBLE);
+                }else if(tmp.equals("COLLAPSED")){
+                    willgone.setVisibility(View.GONE);
+                }
+            }
+        });
+        mLayout.setShadowHeight(0);
+        mLayout.setOverlayed(true);
 
     }
 
