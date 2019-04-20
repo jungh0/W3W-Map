@@ -324,7 +324,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                 .title("MaterialDialog")
                 .negativeText("CANCEL")
                 .negativeColor(R.color.pink_500)
-                .listItems(false, list2)
+                .listItems(true, list2)
                 .itemSelectedListener(new MaterialDialog.ItemSelectedListener() {
                     @Override
                     public void onSelected(View view, int position, long id) {
@@ -350,14 +350,17 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                                 }catch(Exception e){
                                     ToastMD(getContext(), "오류",3);
                                 }
+
                             }
                         }, 0);
+
                     }
                 })
                 .buttonCallback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         super.onNegative(dialog);
+                        dialog.dismiss();
                     }
                 })
                 .show();

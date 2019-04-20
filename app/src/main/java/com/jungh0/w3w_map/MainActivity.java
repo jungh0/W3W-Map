@@ -1,6 +1,9 @@
 package com.jungh0.w3w_map;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.KeyEvent;
@@ -17,6 +20,12 @@ import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.pepperonas.materialdialog.MaterialDialog;
+import com.pepperonas.materialdialog.model.LicenseInfo;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -30,6 +39,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         search = (EditText) toolbar.findViewById(R.id.search);
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -79,22 +89,91 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_tools) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.opensource) {
+            showMaterialDialogLicenseInfo();
+        } else if (id == R.id.contact) {
+            ClipboardManager clipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText("email", "iveinvalue@gmail.com");
+            clipboardManager.setPrimaryClip(clipData);
+            showMaterialDialog("개발자 이메일","클립보드에 복사 되었습니다.");
+        } else if (id == R.id.version) {
+            showMaterialDialog("버전 정보","1.0.1(23)");
         }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showMaterialDialog(String str,String str2) {
+        new MaterialDialog.Builder(this)
+                .title(str)
+                .message(str2)
+                .positiveText("확인")
+                .positiveColor(R.color.green_700)
+                .show();
+    }
+
+    private void showMaterialDialogLicenseInfo() {
+        List<LicenseInfo> licenseInfos = getLicenseInfos();
+
+        new MaterialDialog.Builder(this)
+                .title("라이센스 정보")
+                .licenseDialog(licenseInfos)
+                .positiveText("확인")
+                .show();
+    }
+
+    @NonNull
+    private List<LicenseInfo> getLicenseInfos() {
+        List<LicenseInfo> licenseInfos = new ArrayList<>();
+
+        licenseInfos.add(new LicenseInfo(
+                "AndroidSlidingUpPanel",
+                "https://github.com/umano/AndroidSlidingUpPanel",
+                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+                        "you may not use this file except in compliance with the License.\n" +
+                        "You may obtain a copy of the License at\n" +
+                        "\n" +
+                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
+                        "\n" +
+                        "Unless required by applicable law or agreed to in writing, software\n" +
+                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+                        "See the License for the specific language governing permissions and\n" +
+                        "limitations under the License."));
+
+        licenseInfos.add(new LicenseInfo(
+                "MaterialDesign-Toast",
+                "https://github.com/pepperonas/MaterialDialog",
+                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+                        "you may not use this file except in compliance with the License.\n" +
+                        "You may obtain a copy of the License at\n" +
+                        "\n" +
+                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
+                        "\n" +
+                        "Unless required by applicable law or agreed to in writing, software\n" +
+                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+                        "See the License for the specific language governing permissions and\n" +
+                        "limitations under the License."));
+
+        licenseInfos.add(new LicenseInfo(
+                "MaterialDialog",
+                "https://github.com/pepperonas/MaterialDialog",
+                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+                        "you may not use this file except in compliance with the License.\n" +
+                        "You may obtain a copy of the License at\n" +
+                        "\n" +
+                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
+                        "\n" +
+                        "Unless required by applicable law or agreed to in writing, software\n" +
+                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+                        "See the License for the specific language governing permissions and\n" +
+                        "limitations under the License."));
+
+
+        return licenseInfos;
     }
 }
