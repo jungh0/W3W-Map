@@ -22,12 +22,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -37,6 +40,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -84,62 +88,71 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.jungh0.w3w_map.Collection.ToastMD;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MapsActivity extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
     private GoogleMap mGoogleMap = null;
     private static final String TAG = "w3w_";
     private FusedLocationProviderClient fusedLocationClient;
 
     TextView word_3, country, nearest, longitude_t, latitude_t ;
-    EditText search;
     RelativeLayout card_up;
     FrameLayout willgone;
     String w3w_apikey = "CD39RHMH";
 
+    ViewGroup rootView;
+
     @SuppressLint("RestrictedApi")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_maps);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
+        //super.onCreate(savedInstanceState);
+        rootView = (ViewGroup) inflater.inflate(R.layout.activity_maps, container, false);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //setContentView(R.layout.activity_maps);
 
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         /*
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(Color.parseColor("#2A2A2A"));
         }*/
 
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         Collection.init_network();
-        card_up = (RelativeLayout) findViewById(R.id.card_up);
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.relative_card_up, card_up, true);
+        card_up = (RelativeLayout) rootView.findViewById(R.id.card_up);
+        LayoutInflater inflater2 = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater2.inflate(R.layout.relative_card_up, card_up, true);
         word_3 = (TextView) card_up.findViewById(R.id.w3w_t);
         country = (TextView) card_up.findViewById(R.id.nearestPlace_t);
         nearest = (TextView) card_up.findViewById(R.id.country_t);
         longitude_t = (TextView) card_up.findViewById(R.id.longitude_t);
         latitude_t = (TextView) card_up.findViewById(R.id.latitude_t);
-        search = (EditText) findViewById(R.id.search);
         willgone = (FrameLayout) card_up.findViewById(R.id.willgone);
 
         //검색 엔터키 눌렀을 때
-        search.setOnKeyListener(new View.OnKeyListener() {
+        //EditText search = (EditText) findViewById(R.id.search);
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    keyboard_search();
-                    return true;
-                }
-                return false;
+            public void run() {
+                MainActivity.search.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                            keyboard_search();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             }
-        });
+        }, 1000);
 
+
+        //Log.v(TAG, "여기1");
         //슬라이드 업 패널 리스너
-        final SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        final SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
         mLayout.setFadeOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,6 +186,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLayout.setShadowHeight(0);
         mLayout.setOverlayed(true);
 
+        return rootView;
     }
 
     @Override
@@ -181,7 +195,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap = googleMap;
 
         //위치 권한
-        int permission = Collection.location_permission(getApplicationContext(),this);
+        int permission = Collection.location_permission(getContext(),getActivity());
         if (permission == 1){
             startLocationUpdates();
         }else{
@@ -197,7 +211,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         //현재 위치 버튼
-        FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab = rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -214,12 +228,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //사용자 현재 위치
     private void startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ToastMD(getApplicationContext(), "이 앱을 실행하려면 위치 접근 권한이 필요합니다.",3);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ToastMD(getContext(), "이 앱을 실행하려면 위치 접근 권한이 필요합니다.",3);
             return;
         }
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        fusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
@@ -228,7 +242,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     markerMap(mGoogleMap,latitude,longitude);
                     moveMap(mGoogleMap,latitude,longitude);
                 }else{
-                    ToastMD(getApplicationContext(),"현재위치를 찾을 수 없습니다.",3);
+                    ToastMD(getContext(),"현재위치를 찾을 수 없습니다.",3);
                     setDefaultLocation();
                 }
 
@@ -258,7 +272,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void run() {
                 word_3.setText("");
-                String get_w3w = Collection.gethttp(getApplicationContext(),"https://api.what3words.com/v3/convert-to-3wa?coordinates=" + latitude + "%2C" + longitude + "&key=" + w3w_apikey + "&language=ko");
+                String get_w3w = Collection.gethttp(getContext(),"https://api.what3words.com/v3/convert-to-3wa?coordinates=" + latitude + "%2C" + longitude + "&key=" + w3w_apikey + "&language=ko");
                 try{
                     String word_parse = get_w3w.split("\"words\":\"")[1].split("\"")[0];
                     word_3.setText(word_parse);
@@ -278,14 +292,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void keyboard_search() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.showSoftInput(search, 0);
-        imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(MainActivity.search, 0);
+        imm.hideSoftInputFromWindow(MainActivity.search.getWindowToken(), 0);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                String get_w3w = Collection.gethttp(getApplicationContext(),"https://api.what3words.com/v3/autosuggest?key=" + w3w_apikey + "&input=" + search.getText().toString() + "&n-results=5");
+                String get_w3w = Collection.gethttp(getContext(),"https://api.what3words.com/v3/autosuggest?key=" + w3w_apikey + "&input=" + MainActivity.search.getText().toString() + "&n-results=5");
                 try{
                     String[] get_s = get_w3w.split("\"country\":\"");
                     int cnt = get_s.length;
@@ -298,7 +312,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     showMaterialDialogList(get_w,get_d);
                 }catch(Exception e){
-                    ToastMD(getApplicationContext(), "오류",3);
+                    ToastMD(getContext(), "오류",3);
                 }
             }
         }, 0);
@@ -306,7 +320,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     private void showMaterialDialogList(final String[] list,final String[] list2) {
-        new MaterialDialog.Builder(this)
+        new MaterialDialog.Builder(getActivity())
                 .title("MaterialDialog")
                 .negativeText("CANCEL")
                 .negativeColor(R.color.pink_500)
@@ -325,7 +339,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                String get_w3w = Collection.gethttp(getApplicationContext(),"https://api.what3words.com/v3/convert-to-coordinates?key=" + w3w_apikey + "&words=" + list[position] + "&format=json");
+                                String get_w3w = Collection.gethttp(getContext(),"https://api.what3words.com/v3/convert-to-coordinates?key=" + w3w_apikey + "&words=" + list[position] + "&format=json");
                                 try{
                                     //ToastMD(getApplicationContext(),get_w3w,3);
                                     Double longitude = Double.parseDouble(get_w3w.split("\"lng\":")[3].split(",")[0]);
@@ -334,7 +348,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     markerMap(mGoogleMap,latitude,longitude);
                                     moveMap(mGoogleMap,latitude,longitude);
                                 }catch(Exception e){
-                                    ToastMD(getApplicationContext(), "오류",3);
+                                    ToastMD(getContext(), "오류",3);
                                 }
                             }
                         }, 0);
