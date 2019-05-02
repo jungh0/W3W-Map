@@ -1,7 +1,9 @@
 package com.jungh0.w3w_map;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,13 +21,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.pepperonas.materialdialog.MaterialDialog;
 import com.pepperonas.materialdialog.model.LicenseInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static com.jungh0.w3w_map.Collection.ToastMD;
 
@@ -53,9 +58,6 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        Intent intent = getIntent();
-        deeplink = intent.getDataString();
-        ToastMD(getBaseContext(), deeplink,1);
 
     }
 
@@ -109,10 +111,79 @@ public class MainActivity extends AppCompatActivity
             showMaterialDialog("버전 정보","1.0.1(23)");
         } else if (id == R.id.intro) {
             startActivity(new Intent(this, IntroActivity.class));
+        } else if (id == R.id.location_share) {
+            showMaterialDialogShare();
+        } else if (id == R.id.location_search) {
+            showMaterialDialogSearch();
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showMaterialDialogSearch() {
+        new MaterialDialog.Builder(this)
+                .title("위치 추적을 시작합니다.")
+                .customView(R.layout.search_dialog)
+                .showListener(new MaterialDialog.ShowListener() {
+                    @Override
+                    public void onShow(AlertDialog d) {
+                        super.onShow(d);
+                        final TextView info = (TextView) d.findViewById(R.id.editText);
+
+                        Button start = (Button) d.findViewById(R.id.start) ;
+                        start.setOnClickListener(new Button.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ToastMD(getApplicationContext(), "추적 시작", 1);
+                            }
+                        });
+
+                    }
+                })
+                .show();
+    }
+
+    private void showMaterialDialogShare() {
+        new MaterialDialog.Builder(this)
+                .title("위치 공유를 시작합니다.")
+                .customView(R.layout.share_dialog)
+                .showListener(new MaterialDialog.ShowListener() {
+                    @Override
+                    public void onShow(AlertDialog d) {
+                        super.onShow(d);
+                        final TextView info = (TextView) d.findViewById(R.id.editText);
+                        Random rnd = new Random();
+                        int p = rnd.nextInt(999999);
+                        info.setText("w3w-way://location_search/" + String.valueOf(p));
+
+                        Button share = (Button) d.findViewById(R.id.share) ;
+                        share.setOnClickListener(new Button.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                                intent.setType("text/plain");
+                                String subject = "WAY - w3w location sharing";
+                                String text = info.getText().toString();
+                                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                                intent.putExtra(Intent.EXTRA_TEXT, text);
+                                Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
+                                startActivity(chooser);
+                            }
+                        });
+                        Button clip = (Button) d.findViewById(R.id.clip) ;
+                        clip.setOnClickListener(new Button.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ClipboardManager clipboard = (ClipboardManager) getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("WAY", info.getText().toString());
+                                clipboard.setPrimaryClip(clip);
+                                ToastMD(getApplicationContext(), info.getText().toString() + "\n클립보드에 복사되었습니다.", 1);
+                            }
+                        });
+                    }
+                })
+                .show();
     }
 
     private void showMaterialDialog(String str,String str2) {

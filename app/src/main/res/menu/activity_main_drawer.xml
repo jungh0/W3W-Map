@@ -30,6 +30,10 @@
                 android:icon="@drawable/ic_menu_share"
                 android:title="위치 공유" />
             <item
+                android:id="@+id/location_search"
+                android:icon="@drawable/ic_menu_share"
+                android:title="위치 추적" />
+            <item
                 android:id="@+id/intro"
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="튜토리얼" />
@@ -42,7 +46,7 @@
             <item
                 android:id="@+id/opensource"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="오픈소스 정보" />
+                android:title="라이센스 정보" />
             <item
                 android:id="@+id/contact"
                 android:icon="@drawable/ic_menu_send"

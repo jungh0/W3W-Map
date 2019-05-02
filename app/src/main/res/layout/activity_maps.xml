@@ -37,6 +37,28 @@
                 android:src="@drawable/my_location"
                 card_view:backgroundTint="#FFFFFFFF" />
 
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="200dp"
+                android:clickable="true"
+                android:src="@drawable/plus"
+                card_view:backgroundTint="#FFFFFFFF" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="270dp"
+                android:clickable="true"
+                android:src="@drawable/minus"
+                card_view:backgroundTint="#FFFFFFFF" />
+
         </fragment>
 
         <RelativeLayout
@@ -51,6 +73,8 @@
 
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+
 
 
 

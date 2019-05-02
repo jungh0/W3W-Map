@@ -7,10 +7,11 @@ import android.support.v4.app.Fragment;
 import android.view.WindowManager;
 
 import com.github.paolorotolo.appintro.AppIntro;
+import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.github.paolorotolo.appintro.model.SliderPage;
 
-public class IntroActivity extends AppIntro {
+public class IntroActivity extends AppIntro2 {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,31 +23,33 @@ public class IntroActivity extends AppIntro {
 
         SliderPage sliderPage1 = new SliderPage();
         sliderPage1.setTitle("환영합니다!");
-        sliderPage1.setDescription("Where Are You - W3W location sharing system");
-        sliderPage1.setImageDrawable(R.drawable.ic_launcher_foreground);
-        sliderPage1.setBgColor(Color.parseColor("#5672C5"));
+        sliderPage1.setDescription("W3W 기반 실시간 위치 공유 서비스");
+        sliderPage1.setImageDrawable(R.drawable.main);
+        sliderPage1.setBgColor(Color.parseColor("#677DAD"));
         addSlide(AppIntroFragment.newInstance(sliderPage1));
 
-        SliderPage sliderPage2 = new SliderPage();
-        sliderPage2.setTitle("Clean App Intros");
-        sliderPage2.setDescription("This library offers developers the ability to add clean app intros at the start of their apps.");
-        sliderPage2.setImageDrawable(R.drawable.ic_launcher_foreground);
-        sliderPage2.setBgColor(Color.parseColor("#5672C5"));
-        addSlide(AppIntroFragment.newInstance(sliderPage2));
-
         SliderPage sliderPage3 = new SliderPage();
-        sliderPage3.setTitle("Simple, yet Customizable");
-        sliderPage3.setDescription("The library offers a lot of customization, while keeping it simple for those that like simple.");
-        sliderPage3.setImageDrawable(R.drawable.ic_launcher_foreground);
-        sliderPage3.setBgColor(Color.parseColor("#5672C5"));
+        sliderPage3.setTitle("W3W - What3Words");
+        sliderPage3.setDescription("어느곳에 있든 단어 3개로 찾아가세요!");
+        sliderPage3.setImageDrawable(R.drawable.open);
+        sliderPage3.setBgColor(Color.parseColor("#677DAD"));
         addSlide(AppIntroFragment.newInstance(sliderPage3));
 
         SliderPage sliderPage4 = new SliderPage();
-        sliderPage4.setTitle("Explore");
-        sliderPage4.setDescription("Feel free to explore the rest of the library demo!");
-        sliderPage4.setImageDrawable(R.drawable.ic_launcher_foreground);
-        sliderPage4.setBgColor(Color.parseColor("#5672C5"));
+        sliderPage4.setTitle("위치 공유");
+        sliderPage4.setDescription("실시간 위치를 익명으로 공유하세요!!");
+        sliderPage4.setImageDrawable(R.drawable.location);
+        sliderPage4.setBgColor(Color.parseColor("#677DAD"));
         addSlide(AppIntroFragment.newInstance(sliderPage4));
+
+        SliderPage sliderPage2 = new SliderPage();
+        sliderPage2.setTitle("공유 기능");
+        sliderPage2.setDescription("현재 위치 정보가 있는 단어 3개를 공유하세요!");
+        sliderPage2.setImageDrawable(R.drawable.share);
+        sliderPage2.setBgColor(Color.parseColor("#677DAD"));
+        addSlide(AppIntroFragment.newInstance(sliderPage2));
+
+        showSkipButton(false);
     }
 
     @Override

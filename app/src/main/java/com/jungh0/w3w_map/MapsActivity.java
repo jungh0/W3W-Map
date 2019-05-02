@@ -99,7 +99,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
     private static final String TAG = "w3w_";
     private FusedLocationProviderClient fusedLocationClient;
 
-    TextView word_3, country, nearest, longitude_t, latitude_t ;
+    double last_long , last_lati;
+    TextView word_3, country, nearest, longitude_t, latitude_t;
     RelativeLayout card_up;
     FrameLayout willgone;
     String w3w_apikey = "CD39RHMH";
@@ -109,13 +110,12 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
 
     @SuppressLint("RestrictedApi")
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //super.onCreate(savedInstanceState);
         rootView = (ViewGroup) inflater.inflate(R.layout.activity_maps, container, false);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
 
 
         Collection.init_network();
@@ -169,14 +169,13 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                 Log.i(TAG, "onPanelStateChanged " + newState);
                 String tmp = newState.toString();
                 String tmp2 = previousState.toString();
-                if(tmp.equals("DRAGGING")){
-                    if(tmp2.equals("EXPANDED")){
+                if (tmp.equals("DRAGGING")) {
+                    if (tmp2.equals("EXPANDED")) {
                         willgone.setVisibility(View.GONE);
                     }
-                }
-                else if(tmp.equals("EXPANDED")){
+                } else if (tmp.equals("EXPANDED")) {
                     willgone.setVisibility(View.VISIBLE);
-                }else if(tmp.equals("COLLAPSED")){
+                } else if (tmp.equals("COLLAPSED")) {
                     willgone.setVisibility(View.GONE);
                 }
             }
@@ -189,9 +188,54 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
             @Override
             public void onClick(View view) {
                 ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("WAY", word_3.getText());
+                ClipData clip = ClipData.newPlainText("WAY", word_3.getText().toString());
                 clipboard.setPrimaryClip(clip);
+                ToastMD(getContext(), "(" + word_3.getText().toString() + ") 클립보드에 복사되었습니다.", 1);
+            }
+        });
 
+        FloatingActionButton sms = rootView.findViewById(R.id.sms);
+        sms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                String subject = "WAY - w3w location sharing";
+                String text = word_3.getText().toString();
+                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                intent.putExtra(Intent.EXTRA_TEXT, text);
+                Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
+                startActivity(chooser);
+            }
+        });
+
+        FloatingActionButton kakao = rootView.findViewById(R.id.kakao);
+        kakao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                String subject = "WAY - w3w location sharing";
+                String text = word_3.getText().toString();
+                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                intent.putExtra(Intent.EXTRA_TEXT, text);
+                Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
+                startActivity(chooser);
+            }
+        });
+
+        FloatingActionButton hangout = rootView.findViewById(R.id.hangout);
+        hangout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                String subject = "WAY - w3w location sharing";
+                String text = word_3.getText().toString();
+                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                intent.putExtra(Intent.EXTRA_TEXT, text);
+                Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
+                startActivity(chooser);
             }
         });
 
@@ -205,10 +249,10 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         mGoogleMap = googleMap;
 
         //위치 권한
-        int permission = Collection.location_permission(getContext(),getActivity());
-        if (permission == 1){
+        int permission = Collection.location_permission(getContext(), getActivity());
+        if (permission == 1) {
             startLocationUpdates();
-        }else{
+        } else {
             setDefaultLocation();
         }
 
@@ -216,7 +260,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
-                markerMap(mGoogleMap,point.latitude, point.longitude);
+                markerMap(mGoogleMap, point.latitude, point.longitude);
             }
         });
 
@@ -228,18 +272,38 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                 startLocationUpdates();
             }
         });
+
+        //확대
+        FloatingActionButton up = rootView.findViewById(R.id.up);
+        up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Float zoom = Float.parseFloat(mGoogleMap.getCameraPosition().toString().split("zoom=")[1].split(",")[0]) + 1;
+                moveMap(mGoogleMap, last_lati, last_long,zoom);
+            }
+        });
+
+        //축소
+        FloatingActionButton down = rootView.findViewById(R.id.down);
+        down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Float zoom = Float.parseFloat(mGoogleMap.getCameraPosition().toString().split("zoom=")[1].split(",")[0]) - 1;
+                moveMap(mGoogleMap, last_lati, last_long,zoom);
+            }
+        });
     }
 
     //인터넷 연결 없을 시 기본 서울로 지정
     public void setDefaultLocation() {
-        markerMap(mGoogleMap,37.450989,127.127156);
-        moveMap(mGoogleMap,37.450989,127.127156);
+        markerMap(mGoogleMap, 37.450989, 127.127156);
+        moveMap(mGoogleMap, 37.450989, 127.127156,15);
     }
 
     //사용자 현재 위치
     private void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ToastMD(getContext(), "이 앱을 실행하려면 위치 접근 권한이 필요합니다.",3);
+            ToastMD(getContext(), "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", 3);
             return;
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
@@ -249,10 +313,10 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                 if (location != null) {
                     Double latitude = location.getLatitude();
                     Double longitude = location.getLongitude();
-                    markerMap(mGoogleMap,latitude,longitude);
-                    moveMap(mGoogleMap,latitude,longitude);
-                }else{
-                    ToastMD(getContext(),"현재위치를 찾을 수 없습니다.",3);
+                    markerMap(mGoogleMap, latitude, longitude);
+                    moveMap(mGoogleMap, latitude, longitude,15);
+                } else {
+                    ToastMD(getContext(), "현재위치를 찾을 수 없습니다.", 3);
                     setDefaultLocation();
                 }
 
@@ -261,16 +325,18 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
     }
 
     //좌표로 카메라 이동
-    public void moveMap(GoogleMap gMap, double latitude, double longitude) {
+    public void moveMap(GoogleMap gMap, double latitude, double longitude, float size) {
         Log.v(TAG, "mapMoved: " + gMap);
         LatLng latlng = new LatLng(latitude, longitude);
-        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(latlng, 15);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(latlng, size);
         gMap.addMarker(new MarkerOptions().position(latlng));
         gMap.moveCamera(cu);
     }
 
     //좌표에 핀 찍기
     public void markerMap(GoogleMap gMap, final double latitude, final double longitude) {
+        last_long = longitude;
+        last_lati = latitude;
         Log.v(TAG, "mapMarked: " + gMap);
         MarkerOptions mOptions = new MarkerOptions();
         //mOptions.title("마커 좌표");//mOptions.snippet(latitude + ", " + longitude);
@@ -282,8 +348,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
             @Override
             public void run() {
                 word_3.setText("");
-                String get_w3w = Collection.gethttp(getContext(),"https://api.what3words.com/v3/convert-to-3wa?coordinates=" + latitude + "%2C" + longitude + "&key=" + w3w_apikey + "&language=ko");
-                try{
+                String get_w3w = Collection.gethttp(getContext(), "https://api.what3words.com/v3/convert-to-3wa?coordinates=" + latitude + "%2C" + longitude + "&key=" + w3w_apikey + "&language=ko");
+                try {
                     String word_parse = get_w3w.split("\"words\":\"")[1].split("\"")[0];
                     word_3.setText(word_parse);
                     word_parse = get_w3w.split("\"country\":\"")[1].split("\"")[0];
@@ -294,7 +360,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                     longitude_t.setText(word_parse);
                     word_parse = get_w3w.split("\"lat\":")[3].split("\\}")[0];
                     latitude_t.setText(word_parse);
-                }catch(Exception e){
+                } catch (Exception e) {
                     word_3.setText("API 오류");
                 }
             }
@@ -309,27 +375,27 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                String get_w3w = Collection.gethttp(getContext(),"https://api.what3words.com/v3/autosuggest?key=" + w3w_apikey + "&input=" + MainActivity.search.getText().toString() + "&n-results=5");
-                try{
+                String get_w3w = Collection.gethttp(getContext(), "https://api.what3words.com/v3/autosuggest?key=" + w3w_apikey + "&input=" + MainActivity.search.getText().toString() + "&n-results=5");
+                try {
                     String[] get_s = get_w3w.split("\"country\":\"");
                     int cnt = get_s.length;
                     String[] get_w = new String[cnt - 2];
                     String[] get_d = new String[cnt - 2];
-                    for (int i = 0 ; i< cnt - 2; i++){
-                        get_w[i] = get_s[i+1].split("\"words\":\"")[1].split("\"")[0];
-                        get_d[i] = get_w[i] + " - " +get_s[i+1].split("\"")[0];
-                        get_d[i] = get_d[i] + " - " + get_s[i+1].split("\"nearestPlace\":\"")[1].split("\"")[0];
+                    for (int i = 0; i < cnt - 2; i++) {
+                        get_w[i] = get_s[i + 1].split("\"words\":\"")[1].split("\"")[0];
+                        get_d[i] = get_w[i] + " - " + get_s[i + 1].split("\"")[0];
+                        get_d[i] = get_d[i] + " - " + get_s[i + 1].split("\"nearestPlace\":\"")[1].split("\"")[0];
                     }
-                    showMaterialDialogList(get_w,get_d);
-                }catch(Exception e){
-                    ToastMD(getContext(), "오류",3);
+                    showMaterialDialogList(get_w, get_d);
+                } catch (Exception e) {
+                    ToastMD(getContext(), "오류", 3);
                 }
             }
         }, 0);
     }
 
 
-    private void showMaterialDialogList(final String[] list,final String[] list2) {
+    private void showMaterialDialogList(final String[] list, final String[] list2) {
         new MaterialDialog.Builder(getActivity())
                 .title("선택하세요")
                 .negativeText("취소")
@@ -349,16 +415,16 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                String get_w3w = Collection.gethttp(getContext(),"https://api.what3words.com/v3/convert-to-coordinates?key=" + w3w_apikey + "&words=" + list[position] + "&format=json");
-                                try{
+                                String get_w3w = Collection.gethttp(getContext(), "https://api.what3words.com/v3/convert-to-coordinates?key=" + w3w_apikey + "&words=" + list[position] + "&format=json");
+                                try {
                                     //ToastMD(getApplicationContext(),get_w3w,3);
                                     Double longitude = Double.parseDouble(get_w3w.split("\"lng\":")[3].split(",")[0]);
                                     Double latitude = Double.parseDouble(get_w3w.split("\"lat\":")[3].split("\\}")[0]);
                                     //ToastMD(getApplicationContext(), Double.toString(longitude),3);
-                                    markerMap(mGoogleMap,latitude,longitude);
-                                    moveMap(mGoogleMap,latitude,longitude);
-                                }catch(Exception e){
-                                    ToastMD(getContext(), "오류",3);
+                                    markerMap(mGoogleMap, latitude, longitude);
+                                    moveMap(mGoogleMap, latitude, longitude,15);
+                                } catch (Exception e) {
+                                    ToastMD(getContext(), "오류", 3);
                                 }
 
                             }
