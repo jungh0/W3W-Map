@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -45,6 +47,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -101,6 +104,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
     FrameLayout willgone;
     String w3w_apikey = "CD39RHMH";
 
+
     ViewGroup rootView;
 
     @SuppressLint("RestrictedApi")
@@ -108,17 +112,11 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         //super.onCreate(savedInstanceState);
         rootView = (ViewGroup) inflater.inflate(R.layout.activity_maps, container, false);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        //setContentView(R.layout.activity_maps);
-
-        //getSupportActionBar().hide();
-        /*
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(Color.parseColor("#2A2A2A"));
-        }*/
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
 
         Collection.init_network();
         card_up = (RelativeLayout) rootView.findViewById(R.id.card_up);
@@ -185,6 +183,18 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         });
         mLayout.setShadowHeight(0);
         mLayout.setOverlayed(true);
+
+        FloatingActionButton copy_word = rootView.findViewById(R.id.fab2);
+        copy_word.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("WAY", word_3.getText());
+                clipboard.setPrimaryClip(clip);
+
+            }
+        });
+
 
         return rootView;
     }
@@ -321,8 +331,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
 
     private void showMaterialDialogList(final String[] list,final String[] list2) {
         new MaterialDialog.Builder(getActivity())
-                .title("MaterialDialog")
-                .negativeText("CANCEL")
+                .title("선택하세요")
+                .negativeText("취소")
                 .negativeColor(R.color.pink_500)
                 .listItems(true, list2)
                 .itemSelectedListener(new MaterialDialog.ItemSelectedListener() {

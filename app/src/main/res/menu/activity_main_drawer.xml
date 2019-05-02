@@ -29,15 +29,16 @@
                 android:id="@+id/location_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="위치 공유" />
+            <item
+                android:id="@+id/intro"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="튜토리얼" />
         </menu>
     </item>
 
+
     <item android:title="정보">
         <menu>
-            <item
-                android:id="@+id/version"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="버전 확인" />
             <item
                 android:id="@+id/opensource"
                 android:icon="@drawable/ic_menu_manage"
@@ -46,6 +47,10 @@
                 android:id="@+id/contact"
                 android:icon="@drawable/ic_menu_send"
                 android:title="개발자 피드백" />
+            <item
+                android:id="@+id/version"
+                android:icon="@drawable/ic_arrow_back_white"
+                android:title="버전 확인" />
         </menu>
     </item>
 
