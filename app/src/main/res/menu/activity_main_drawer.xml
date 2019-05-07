@@ -27,15 +27,15 @@
         <menu>
             <item
                 android:id="@+id/location_share"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/share2"
                 android:title="위치 공유" />
             <item
                 android:id="@+id/location_search"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/trace"
                 android:title="위치 추적" />
             <item
                 android:id="@+id/intro"
-                android:icon="@drawable/ic_menu_slideshow"
+                android:icon="@drawable/tutor"
                 android:title="튜토리얼" />
         </menu>
     </item>
@@ -45,15 +45,15 @@
         <menu>
             <item
                 android:id="@+id/opensource"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/lisence"
                 android:title="라이센스 정보" />
             <item
                 android:id="@+id/contact"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/feedback"
                 android:title="개발자 피드백" />
             <item
                 android:id="@+id/version"
-                android:icon="@drawable/ic_arrow_back_white"
+                android:icon="@drawable/version"
                 android:title="버전 확인" />
         </menu>
     </item>
