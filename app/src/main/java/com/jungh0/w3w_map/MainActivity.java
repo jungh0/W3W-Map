@@ -58,6 +58,11 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        //광천추가
+        Intent  intent = new Intent(this,MyService.class);
+        intent.putExtra("id","1"); //여기선 1로함
+        startService(intent);
+
 
     }
 
