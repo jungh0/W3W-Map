@@ -5,6 +5,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -25,12 +27,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.Task;
 import com.pepperonas.materialdialog.MaterialDialog;
 import com.pepperonas.materialdialog.model.LicenseInfo;
+
+import org.aviran.cookiebar2.CookieBar;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 
 import static com.jungh0.w3w_map.Collection.ToastMD;
 
@@ -49,6 +55,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         search = (EditText) toolbar.findViewById(R.id.search);
 
+        getSupportActionBar().setElevation(0);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -62,6 +69,8 @@ public class MainActivity extends AppCompatActivity
         Intent  intent = new Intent(this,MyService.class);
         intent.putExtra("id","1"); //여기선 1로함
         startService(intent);
+
+
 
 
     }
@@ -155,7 +164,7 @@ public class MainActivity extends AppCompatActivity
                 .customView(R.layout.share_dialog)
                 .showListener(new MaterialDialog.ShowListener() {
                     @Override
-                    public void onShow(AlertDialog d) {
+                    public void onShow(final AlertDialog d) {
                         super.onShow(d);
                         final TextView info = (TextView) d.findViewById(R.id.editText);
                         Random rnd = new Random();
@@ -184,6 +193,19 @@ public class MainActivity extends AppCompatActivity
                                 ClipData clip = ClipData.newPlainText("WAY", info.getText().toString());
                                 clipboard.setPrimaryClip(clip);
                                 ToastMD(getApplicationContext(), info.getText().toString() + "\n클립보드에 복사되었습니다.", 1);
+                            }
+                        });
+                        Button start = (Button) d.findViewById(R.id.start) ;
+                        start.setOnClickListener(new Button.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                d.dismiss();
+                                CookieBar.build(MainActivity.this)
+                                        .setTitle("위치 공유중..")
+                                        .setMessage("현재 위치가 공유 되고 있습니다.")
+                                        .setCookiePosition(CookieBar.TOP)
+                                        .setDuration(999999)
+                                        .show();
                             }
                         });
                     }
