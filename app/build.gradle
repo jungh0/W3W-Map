@@ -20,6 +20,7 @@ android {
 
 android {
     useLibrary 'org.apache.http.legacy'
+
 }
 
 
@@ -38,4 +39,5 @@ dependencies {
     implementation 'com.github.pepperonas:materialdialog:0.3.4'
     implementation 'com.github.AppIntro:AppIntro:4.2.3'
     implementation 'org.aviran.cookiebar2:cookiebar2:1.1.2'
+    implementation 'com.github.glomadrian:CodeInput:1.1@aar'
 }

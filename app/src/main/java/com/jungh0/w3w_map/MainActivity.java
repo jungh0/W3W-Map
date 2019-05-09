@@ -1,5 +1,6 @@
 package com.jungh0.w3w_map;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -27,24 +28,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.github.glomadrian.codeinputlib.CodeInput;
 import com.google.android.gms.tasks.Task;
 import com.pepperonas.materialdialog.MaterialDialog;
 import com.pepperonas.materialdialog.model.LicenseInfo;
 
 import org.aviran.cookiebar2.CookieBar;
+import org.aviran.cookiebar2.OnActionClickListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 
 import static com.jungh0.w3w_map.Collection.ToastMD;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     static EditText search;
     static String deeplink = "";
+    static Activity main_act;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,8 @@ public class MainActivity extends AppCompatActivity
 
         getSupportActionBar().setElevation(0);
 
+        main_act = MainActivity.this;
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -64,14 +70,6 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
-        //광천추가
-        Intent  intent = new Intent(this,MyService.class);
-        intent.putExtra("id","1"); //여기선 1로함
-        startService(intent);
-
-
-
 
     }
 
@@ -141,18 +139,45 @@ public class MainActivity extends AppCompatActivity
                 .customView(R.layout.search_dialog)
                 .showListener(new MaterialDialog.ShowListener() {
                     @Override
-                    public void onShow(AlertDialog d) {
+                    public void onShow(final AlertDialog d) {
                         super.onShow(d);
-                        final TextView info = (TextView) d.findViewById(R.id.editText);
-
+                        final CodeInput info = (CodeInput) d.findViewById(R.id.editText);
                         Button start = (Button) d.findViewById(R.id.start) ;
                         start.setOnClickListener(new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                ToastMD(getApplicationContext(), "추적 시작", 1);
+                                d.dismiss();
+
+                                String codee = Arrays.toString(info.getCode())
+                                        .replace(",","")
+                                        .replace(" ","")
+                                        .replace("[","")
+                                        .replace("]","");
+
+                                //showMaterialDialog("",codee);
+                                final Intent  intent = new Intent(getApplication(),GetLocationService.class);
+                                intent.putExtra("id",codee); //여기선 1로함
+                                startService(intent);
+                                MapsActivity.is_geting = 1;
+                                CookieBar.build(MainActivity.this)
+                                        .setTitle("위치 추적중..")
+                                        .setMessage("다른 사용자의 위치를 추적하고 있습니다.")
+                                        .setCookiePosition(CookieBar.TOP)
+                                        .setEnableAutoDismiss(false)
+                                        .setSwipeToDismiss(false)
+                                        .setAction("위치 추적 취소", new OnActionClickListener() {
+                                            @Override
+                                            public void onClick() {
+                                                MapsActivity.is_geting = 0;
+                                                MapsActivity.is_geting2 = 0;
+                                                stopService(intent);
+                                                GetLocationService.switch_ = false;
+                                                showMaterialDialog("","위치 추척이 취소되었습니다.");
+                                            }
+                                        })
+                                        .show();
                             }
                         });
-
                     }
                 })
                 .show();
@@ -175,24 +200,14 @@ public class MainActivity extends AppCompatActivity
                         share.setOnClickListener(new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-                                intent.setType("text/plain");
-                                String subject = "WAY - w3w location sharing";
-                                String text = info.getText().toString();
-                                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-                                intent.putExtra(Intent.EXTRA_TEXT, text);
-                                Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
-                                startActivity(chooser);
+                                Collection.share_sns(MainActivity.this,info.getText().toString());
                             }
                         });
                         Button clip = (Button) d.findViewById(R.id.clip) ;
                         clip.setOnClickListener(new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                ClipboardManager clipboard = (ClipboardManager) getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
-                                ClipData clip = ClipData.newPlainText("WAY", info.getText().toString());
-                                clipboard.setPrimaryClip(clip);
-                                ToastMD(getApplicationContext(), info.getText().toString() + "\n클립보드에 복사되었습니다.", 1);
+                                Collection.clip_copy(MainActivity.this,getApplicationContext(),info.getText().toString());
                             }
                         });
                         Button start = (Button) d.findViewById(R.id.start) ;
@@ -202,9 +217,16 @@ public class MainActivity extends AppCompatActivity
                                 d.dismiss();
                                 CookieBar.build(MainActivity.this)
                                         .setTitle("위치 공유중..")
-                                        .setMessage("현재 위치가 공유 되고 있습니다.")
+                                        .setMessage("현재 위치가 공유되고 있습니다.")
                                         .setCookiePosition(CookieBar.TOP)
-                                        .setDuration(999999)
+                                        .setEnableAutoDismiss(false)
+                                        .setSwipeToDismiss(false)
+                                        .setAction("위치 공유 취소", new OnActionClickListener() {
+                                            @Override
+                                            public void onClick() {
+                                                showMaterialDialog("","위치 공유가 취소되었습니다.");
+                                            }
+                                        })
                                         .show();
                             }
                         });
@@ -224,7 +246,6 @@ public class MainActivity extends AppCompatActivity
 
     private void showMaterialDialogLicenseInfo() {
         List<LicenseInfo> licenseInfos = getLicenseInfos();
-
         new MaterialDialog.Builder(this)
                 .title("라이센스 정보")
                 .licenseDialog(licenseInfos)

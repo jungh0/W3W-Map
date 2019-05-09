@@ -91,22 +91,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+
+
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.jungh0.w3w_map.Collection.ToastMD;
 
 public class MapsActivity extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
     private GoogleMap mGoogleMap = null;
     private static final String TAG = "w3w_";
-    private FusedLocationProviderClient fusedLocationClient;
+    String w3w_apikey = "CD39RHMH";
 
     double last_long , last_lati;
     TextView word_3, country, nearest, longitude_t, latitude_t;
-    RelativeLayout card_up;
-    FrameLayout willgone;
-    String w3w_apikey = "CD39RHMH";
-
-
     ViewGroup rootView;
+
+    static double get_long , get_lati, is_geting = 0, is_geting2 = 0;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -116,10 +115,10 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
         Collection.init_network();
-        card_up = (RelativeLayout) rootView.findViewById(R.id.card_up);
+
+        RelativeLayout card_up = (RelativeLayout) rootView.findViewById(R.id.card_up);
+
         LayoutInflater inflater2 = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater2.inflate(R.layout.relative_card_up, card_up, true);
         word_3 = (TextView) card_up.findViewById(R.id.w3w_t);
@@ -127,29 +126,11 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         nearest = (TextView) card_up.findViewById(R.id.country_t);
         longitude_t = (TextView) card_up.findViewById(R.id.longitude_t);
         latitude_t = (TextView) card_up.findViewById(R.id.latitude_t);
-        willgone = (FrameLayout) card_up.findViewById(R.id.willgone);
 
-        //검색 엔터키 눌렀을 때
-        //EditText search = (EditText) findViewById(R.id.search);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                MainActivity.search.setOnKeyListener(new View.OnKeyListener() {
-                    @Override
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                            keyboard_search();
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-            }
-        }, 1000);
-
-
-        //Log.v(TAG, "여기1");
         //슬라이드 업 패널 리스너
+        final FrameLayout willgone = (FrameLayout) card_up.findViewById(R.id.willgone);
+        willgone.setVisibility(View.GONE);
+
         final SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
         mLayout.setFadeOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,13 +138,11 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                 mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
-        willgone.setVisibility(View.GONE);
         mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
                 //Log.i(TAG, "onPanelSlide, offset " + slideOffset);
             }
-
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 Log.i(TAG, "onPanelStateChanged " + newState);
@@ -187,60 +166,81 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         copy_word.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("WAY", word_3.getText().toString());
-                clipboard.setPrimaryClip(clip);
-                ToastMD(getContext(), "(" + word_3.getText().toString() + ") 클립보드에 복사되었습니다.", 1);
+                Collection.clip_copy(getActivity(),getContext(),word_3.getText().toString());
             }
         });
 
-        FloatingActionButton sms = rootView.findViewById(R.id.sms);
-        sms.setOnClickListener(new View.OnClickListener() {
+        fab_each(rootView,R.id.sms);
+        fab_each(rootView,R.id.kakao);
+        fab_each(rootView,R.id.hangout);
+
+        //검색 엔터키 눌렀을 때
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-                intent.setType("text/plain");
-                String subject = "WAY - w3w location sharing";
-                String text = word_3.getText().toString();
-                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-                intent.putExtra(Intent.EXTRA_TEXT, text);
-                Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
-                startActivity(chooser);
+            public void run() {
+                MainActivity.search.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                            keyboard_search();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             }
-        });
+        }, 1000);
 
-        FloatingActionButton kakao = rootView.findViewById(R.id.kakao);
-        kakao.setOnClickListener(new View.OnClickListener() {
+
+        final Handler mHandler = new Handler();
+        Thread t = new Thread(new Runnable(){
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-                intent.setType("text/plain");
-                String subject = "WAY - w3w location sharing";
-                String text = word_3.getText().toString();
-                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-                intent.putExtra(Intent.EXTRA_TEXT, text);
-                Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
-                startActivity(chooser);
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(2000);
+                        if (!Collection.isNetworkAvailable(getContext())) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastMD(getContext(), "인터넷 연결에 실패 했습니다.",3);
+                                }
+                            });
+                        }
+
+                        if (is_geting == 1){
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (is_geting2 == 0){
+                                        moveMap(mGoogleMap, get_lati, get_long,15);
+                                        is_geting2 = 1;
+                                    }
+                                    markerMap(mGoogleMap, get_lati, get_long);
+                                }
+                            });
+                        }
+                    } catch (Exception ex) {
+                        Collection.ToastMD(getContext(), "추적 오류", 3);
+                    }
+
+
+                }
             }
         });
-
-        FloatingActionButton hangout = rootView.findViewById(R.id.hangout);
-        hangout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-                intent.setType("text/plain");
-                String subject = "WAY - w3w location sharing";
-                String text = word_3.getText().toString();
-                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-                intent.putExtra(Intent.EXTRA_TEXT, text);
-                Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
-                startActivity(chooser);
-            }
-        });
-
+        t.start();
 
         return rootView;
+    }
+
+    public void fab_each(ViewGroup aa, int find_id){
+        FloatingActionButton tmp = aa.findViewById(find_id);
+        tmp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Collection.share_sns(getActivity(),word_3.getText().toString());
+            }
+        });
     }
 
     @Override
@@ -260,7 +260,11 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
-                markerMap(mGoogleMap, point.latitude, point.longitude);
+                if (is_geting == 0){
+                    markerMap(mGoogleMap, point.latitude, point.longitude);
+                }else{
+                    Collection.ToastMD(getContext(), "위치 공유중에는 핀을 수정 할 수 없습니다.", 4);
+                }
             }
         });
 
@@ -269,7 +273,11 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startLocationUpdates();
+                if (is_geting == 0){
+                    startLocationUpdates();
+                }else {
+                    Collection.ToastMD(getContext(), "위치 공유중에는 핀을 수정 할 수 없습니다.", 4);
+                }
             }
         });
 
@@ -306,7 +314,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
             ToastMD(getContext(), "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", 3);
             return;
         }
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         fusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -319,7 +327,6 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                     ToastMD(getContext(), "현재위치를 찾을 수 없습니다.", 3);
                     setDefaultLocation();
                 }
-
             }
         });
     }
@@ -426,7 +433,6 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                                 } catch (Exception e) {
                                     ToastMD(getContext(), "오류", 3);
                                 }
-
                             }
                         }, 0);
 

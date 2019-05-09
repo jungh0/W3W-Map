@@ -43,7 +43,7 @@
             android:label="@string/title_activity_maps"></activity>
 
         <service
-            android:name=".MyService"
+            android:name=".GetLocationService"
             android:enabled="true"
             android:exported="true"></service>
     </application>
