@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,13 +26,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.github.glomadrian.codeinputlib.CodeInput;
+
 import com.google.android.gms.tasks.Task;
 import com.pepperonas.materialdialog.MaterialDialog;
 import com.pepperonas.materialdialog.model.LicenseInfo;
+import com.raycoarana.codeinputview.CodeInputView;
 
 import org.aviran.cookiebar2.CookieBar;
 import org.aviran.cookiebar2.OnActionClickListener;
@@ -49,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static EditText search;
     static String deeplink = "";
     static Activity main_act;
+    Context main_cont;
+    static String set__id = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setElevation(0);
 
         main_act = MainActivity.this;
+        main_cont = getApplicationContext();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -70,6 +76,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        SharedPreferences pref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
+        boolean first = pref.getBoolean("isFirst", false);
+        if(first==false){
+           // Log.d("Is first Time?", "first");
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isFirst",true);
+            editor.commit();
+            startActivity(new Intent(this, IntroActivity.class));
+        }else{
+            //Log.d("Is first Time?", "not first");
+        }
+
+
 
     }
 
@@ -86,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -141,19 +162,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onShow(final AlertDialog d) {
                         super.onShow(d);
-                        final CodeInput info = (CodeInput) d.findViewById(R.id.editText);
+                        final CodeInputView info = (CodeInputView) d.findViewById(R.id.editText);
                         Button start = (Button) d.findViewById(R.id.start) ;
+                        final CheckBox auto_move = (CheckBox) d.findViewById(R.id.checkBox);
                         start.setOnClickListener(new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 d.dismiss();
-
-                                String codee = Arrays.toString(info.getCode())
-                                        .replace(",","")
-                                        .replace(" ","")
-                                        .replace("[","")
-                                        .replace("]","");
-
+                                if (auto_move.isChecked()){
+                                    MapsActivity.is_geting2 = 2;
+                                }
+                                String codee = info.getCode();
                                 //showMaterialDialog("",codee);
                                 final Intent  intent = new Intent(getApplication(),GetLocationService.class);
                                 intent.putExtra("id",codee); //여기선 1로함
@@ -161,10 +180,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 MapsActivity.is_geting = 1;
                                 CookieBar.build(MainActivity.this)
                                         .setTitle("위치 추적중..")
-                                        .setMessage("다른 사용자의 위치를 추적하고 있습니다.")
+                                        .setMessage("상대방의 위치가 실시간으로 표시됩니다.")
                                         .setCookiePosition(CookieBar.TOP)
                                         .setEnableAutoDismiss(false)
                                         .setSwipeToDismiss(false)
+                                        .setBackgroundColor(R.color.search)
                                         .setAction("위치 추적 취소", new OnActionClickListener() {
                                             @Override
                                             public void onClick() {
@@ -183,6 +203,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .show();
     }
 
+    private String[] ITEMS = new String[]{"터치 한 위치 공유 (기본)", "현재 위치 자동 공유 (조작이 제한 됩니다.)"};
+
     private void showMaterialDialogShare() {
         new MaterialDialog.Builder(this)
                 .title("위치 공유를 시작합니다.")
@@ -191,43 +213,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onShow(final AlertDialog d) {
                         super.onShow(d);
-                        final TextView info = (TextView) d.findViewById(R.id.editText);
+                        CodeInputView info = (CodeInputView) d.findViewById(R.id.editText);
                         Random rnd = new Random();
-                        int p = rnd.nextInt(999999);
-                        info.setText("w3w-way://location_search/" + String.valueOf(p));
+                        int p = rnd.nextInt(899999);
+                        p = p + 100000;
+                        final String ss = Integer.toString(p);
+                        info.setCode(ss);
 
-                        Button share = (Button) d.findViewById(R.id.share) ;
-                        share.setOnClickListener(new Button.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Collection.share_sns(MainActivity.this,info.getText().toString());
-                            }
-                        });
-                        Button clip = (Button) d.findViewById(R.id.clip) ;
-                        clip.setOnClickListener(new Button.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Collection.clip_copy(MainActivity.this,getApplicationContext(),info.getText().toString());
-                            }
-                        });
                         Button start = (Button) d.findViewById(R.id.start) ;
                         start.setOnClickListener(new Button.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 d.dismiss();
-                                CookieBar.build(MainActivity.this)
-                                        .setTitle("위치 공유중..")
-                                        .setMessage("현재 위치가 공유되고 있습니다.")
-                                        .setCookiePosition(CookieBar.TOP)
-                                        .setEnableAutoDismiss(false)
-                                        .setSwipeToDismiss(false)
-                                        .setAction("위치 공유 취소", new OnActionClickListener() {
-                                            @Override
-                                            public void onClick() {
-                                                showMaterialDialog("","위치 공유가 취소되었습니다.");
-                                            }
-                                        })
-                                        .show();
+                                show___(ss);
                             }
                         });
                     }
@@ -235,12 +233,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .show();
     }
 
+    private void show___(final String ss){
+        new MaterialDialog.Builder(this)
+                .title("공유방식을 선택해 주세요.")
+                .negativeText("취소")
+                .negativeColor(R.color.red)
+                .listItems(true, ITEMS)
+                .itemClickListener(new MaterialDialog.ItemClickListener() {
+                    @Override
+                    public void onClick(View v, int position, long id) {
+                        super.onClick(v, position, id);
+                        //showToast("onClick (" + ITEMS[position] + ")");
+
+                        MapsActivity.is_get_auto = position;
+                        set__id = ss;
+                        MapsActivity.is_seting = 1;
+
+                        CookieBar.build(MainActivity.this)
+                                .setTitle("위치 공유중.. (공유 코드 : " + ss + ")")
+                                .setMessage("터치하는 위치 / 현재위치 가 실시간으로 공유됩니다.")
+                                .setCookiePosition(CookieBar.TOP)
+                                .setEnableAutoDismiss(false)
+                                .setSwipeToDismiss(false)
+                                .setBackgroundColor(R.color.share)
+                                .setAction("위치 공유 취소", new OnActionClickListener() {
+                                    @Override
+                                    public void onClick() {
+                                        MapsActivity.is_seting = 0;
+                                        MapsActivity.is_get_auto = -1;
+                                        showMaterialDialog("","위치 공유가 취소되었습니다.");
+                                    }
+                                })
+                                .show();
+
+                    }
+                })
+                .show();
+
+    }
+
     private void showMaterialDialog(String str,String str2) {
         new MaterialDialog.Builder(this)
                 .title(str)
                 .message(str2)
                 .positiveText("확인")
-                .positiveColor(R.color.green_700)
+                .positiveColor(R.color.red)
                 .show();
     }
 
@@ -305,6 +342,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         licenseInfos.add(new LicenseInfo(
                 "AppIntro",
                 "https://github.com/AppIntro/AppIntro",
+                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+                        "you may not use this file except in compliance with the License.\n" +
+                        "You may obtain a copy of the License at\n" +
+                        "\n" +
+                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
+                        "\n" +
+                        "Unless required by applicable law or agreed to in writing, software\n" +
+                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+                        "See the License for the specific language governing permissions and\n" +
+                        "limitations under the License."));
+
+        licenseInfos.add(new LicenseInfo(
+                "CookieBar2",
+                "CookieBar2",
+                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+                        "you may not use this file except in compliance with the License.\n" +
+                        "You may obtain a copy of the License at\n" +
+                        "\n" +
+                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
+                        "\n" +
+                        "Unless required by applicable law or agreed to in writing, software\n" +
+                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+                        "See the License for the specific language governing permissions and\n" +
+                        "limitations under the License."));
+
+        licenseInfos.add(new LicenseInfo(
+                "CookieBar2",
+                "https://github.com/AviranAbady/CookieBar2",
+                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+                        "you may not use this file except in compliance with the License.\n" +
+                        "You may obtain a copy of the License at\n" +
+                        "\n" +
+                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
+                        "\n" +
+                        "Unless required by applicable law or agreed to in writing, software\n" +
+                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+                        "See the License for the specific language governing permissions and\n" +
+                        "limitations under the License."));
+
+        licenseInfos.add(new LicenseInfo(
+                "material-code-input",
+                "https://github.com/raycoarana/material-code-input",
                 "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
                         "you may not use this file except in compliance with the License.\n" +
                         "You may obtain a copy of the License at\n" +

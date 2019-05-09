@@ -68,14 +68,14 @@ public class GetLocationService extends Service {
             public void run() {
                 main_r(id);
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 while (switch_) {
                     try {
                         main_r(id);
-                        Thread.sleep(2000);
+                        Thread.sleep(1000);
                     } catch (Exception ex) {
                         Collection.ToastMD(getBaseContext(), "오류", 1);
                     }
@@ -93,7 +93,7 @@ public class GetLocationService extends Service {
                 @Override
                 public void run() {
                     //Collection.ToastMD(getBaseContext(), get, 1);
-                    if (get.length() > 3 && !get.contains("Unknown")){
+                    if (get.length() > 3 && !get.contains("Unknown") && !get.contains("error")){
                         get_long = Double.parseDouble(get.split(" ")[0]);
                         get_lati = Double.parseDouble(get.split(" ")[1]);
                     }else{
@@ -106,8 +106,6 @@ public class GetLocationService extends Service {
                     }
                 }
             });
-
-
         }catch (Exception e){
             mHandler.post(new Runnable() {
                 @Override

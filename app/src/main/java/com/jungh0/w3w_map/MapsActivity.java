@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
@@ -105,7 +107,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
     TextView word_3, country, nearest, longitude_t, latitude_t;
     ViewGroup rootView;
 
-    static double get_long , get_lati, is_geting = 0, is_geting2 = 0;
+    static double get_long , get_lati, is_geting = 0, is_geting2 = 0, is_get_auto = -1 ,is_seting = 0;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -207,7 +209,25 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                                 }
                             });
                         }
+                    } catch (Exception ex) {
+                        Collection.ToastMD(getContext(), "추적 오류", 3);
+                    }
 
+
+                }
+            }
+        });
+        t.start();
+
+        Thread t2 = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(500);
+                        if (is_get_auto == 1){
+                            startLocationUpdates(true);
+                        }
                         if (is_geting == 1){
                             mHandler.post(new Runnable() {
                                 @Override
@@ -215,6 +235,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                                     if (is_geting2 == 0){
                                         moveMap(mGoogleMap, get_lati, get_long,15);
                                         is_geting2 = 1;
+                                    }else if (is_geting2 == 2){
+                                        moveMap(mGoogleMap, get_lati, get_long,15);
                                     }
                                     markerMap(mGoogleMap, get_lati, get_long);
                                 }
@@ -228,7 +250,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                 }
             }
         });
-        t.start();
+        t2.start();
 
         return rootView;
     }
@@ -251,7 +273,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         //위치 권한
         int permission = Collection.location_permission(getContext(), getActivity());
         if (permission == 1) {
-            startLocationUpdates();
+            startLocationUpdates(true);
         } else {
             setDefaultLocation();
         }
@@ -260,7 +282,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
-                if (is_geting == 0){
+                if (is_geting == 0 && is_get_auto != 1){
                     markerMap(mGoogleMap, point.latitude, point.longitude);
                 }else{
                     Collection.ToastMD(getContext(), "위치 공유중에는 핀을 수정 할 수 없습니다.", 4);
@@ -273,8 +295,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (is_geting == 0){
-                    startLocationUpdates();
+                if (is_geting == 0 && is_get_auto != 1){
+                    startLocationUpdates(true);
                 }else {
                     Collection.ToastMD(getContext(), "위치 공유중에는 핀을 수정 할 수 없습니다.", 4);
                 }
@@ -286,8 +308,12 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Float zoom = Float.parseFloat(mGoogleMap.getCameraPosition().toString().split("zoom=")[1].split(",")[0]) + 1;
-                moveMap(mGoogleMap, last_lati, last_long,zoom);
+                if (is_get_auto != 1){
+                    Float zoom = Float.parseFloat(mGoogleMap.getCameraPosition().toString().split("zoom=")[1].split(",")[0]) + 1;
+                    moveMap(mGoogleMap, last_lati, last_long,zoom);
+                }else{
+                    Collection.ToastMD(getContext(), "위치 공유중에는 움직일 수 없습니다.", 4);
+                }
             }
         });
 
@@ -296,8 +322,13 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         down.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Float zoom = Float.parseFloat(mGoogleMap.getCameraPosition().toString().split("zoom=")[1].split(",")[0]) - 1;
-                moveMap(mGoogleMap, last_lati, last_long,zoom);
+                if (is_get_auto != 1){
+                    Float zoom = Float.parseFloat(mGoogleMap.getCameraPosition().toString().split("zoom=")[1].split(",")[0]) - 1;
+                    moveMap(mGoogleMap, last_lati, last_long,zoom);
+                }else{
+                    Collection.ToastMD(getContext(), "위치 공유중에는 움직일 수 없습니다.", 4);
+                }
+
             }
         });
     }
@@ -309,7 +340,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
     }
 
     //사용자 현재 위치
-    private void startLocationUpdates() {
+    private void startLocationUpdates(final boolean move) {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ToastMD(getContext(), "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", 3);
             return;
@@ -322,7 +353,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                     Double latitude = location.getLatitude();
                     Double longitude = location.getLongitude();
                     markerMap(mGoogleMap, latitude, longitude);
-                    moveMap(mGoogleMap, latitude, longitude,15);
+                    if (move)
+                        moveMap(mGoogleMap, latitude, longitude,15);
                 } else {
                     ToastMD(getContext(), "현재위치를 찾을 수 없습니다.", 3);
                     setDefaultLocation();
@@ -336,8 +368,14 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         Log.v(TAG, "mapMoved: " + gMap);
         LatLng latlng = new LatLng(latitude, longitude);
         CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(latlng, size);
-        gMap.addMarker(new MarkerOptions().position(latlng));
+        gMap.addMarker(new MarkerOptions().position(latlng).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pin",100,100))));
         gMap.moveCamera(cu);
+    }
+
+    public Bitmap resizeMapIcons(String iconName, int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getActivity().getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
     }
 
     //좌표에 핀 찍기
@@ -347,7 +385,9 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         Log.v(TAG, "mapMarked: " + gMap);
         MarkerOptions mOptions = new MarkerOptions();
         //mOptions.title("마커 좌표");//mOptions.snippet(latitude + ", " + longitude);
+        mOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pin",100,100)));
         mOptions.position(new LatLng(latitude, longitude));
+
         mGoogleMap.clear();
         mGoogleMap.addMarker(mOptions);
 
@@ -372,6 +412,10 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                 }
             }
         }, 0);
+        if (is_seting == 1){
+            Collection.gethttp(getContext(),"http://thousand419.dothome.co.kr/InsertNew.php?id="
+                    + MainActivity.set__id + "&x=" + longitude + "&y=" + latitude);
+        }
     }
 
     public void keyboard_search() {

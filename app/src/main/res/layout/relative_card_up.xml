@@ -88,6 +88,7 @@
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
                 android:text="---.---.---"
+                android:singleLine="true"
                 android:textSize="25sp" />
 
             <TextView
@@ -98,7 +99,8 @@
                 android:layout_alignLeft="@+id/w3w_t"
                 android:layout_marginTop="15dp"
                 android:textSize="20sp"
-                android:text="가까운 장소 : " />
+                android:text="가까운 장소 : "
+                android:singleLine="true"/>
 
             <TextView
                 android:id="@+id/country_t"
@@ -109,7 +111,8 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="5dp"
                 android:textSize="20sp"
-                android:text="---" />
+                android:text="---"
+                android:singleLine="true"/>
 
             <TextView
                 android:id="@+id/nearestPlace"
@@ -119,6 +122,7 @@
                 android:layout_alignLeft="@+id/w3w_t"
                 android:layout_marginTop="10dp"
                 android:text="국가 : "
+                android:singleLine="true"
                 android:textSize="20sp"/>
 
             <TextView
@@ -129,6 +133,7 @@
                 android:layout_toRightOf="@+id/nearestPlace"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"
+                android:singleLine="true"
                 android:textSize="20sp"
                 android:text="---" />
 
@@ -140,6 +145,7 @@
                 android:layout_alignStart="@+id/w3w_t"
                 android:layout_marginTop="10dp"
                 android:text="경도 : "
+                android:singleLine="true"
                 android:textSize="20sp"/>
 
             <TextView
@@ -150,6 +156,7 @@
                 android:layout_toRightOf="@+id/longitude"
                 android:layout_marginLeft="5dp"
                 android:text="---"
+                android:singleLine="true"
                 android:textSize="20sp"/>
 
             <TextView
@@ -160,6 +167,7 @@
                 android:layout_alignStart="@+id/w3w_t"
                 android:layout_marginTop="10dp"
                 android:text="위도 : "
+                android:singleLine="true"
                 android:textSize="20sp"/>
 
             <TextView
@@ -170,6 +178,7 @@
                 android:layout_toRightOf="@+id/latitude"
                 android:layout_marginLeft="5dp"
                 android:text="---"
+                android:singleLine="true"
                 android:textSize="20sp"/>
 
         </RelativeLayout>

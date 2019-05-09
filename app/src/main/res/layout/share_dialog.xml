@@ -2,44 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="10dp">
 
-    <EditText
+
+
+    <com.raycoarana.codeinputview.CodeInputView
         android:id="@+id/editText"
-        android:layout_width="match_parent"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="" />
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        app:underline_selected_color="#CB4320"
+        app:length_of_code="6"
+        app:animate_on_complete="true"
+        app:input_type="numeric" />
+
 
     <Button
         android:id="@+id/start"
+        android:backgroundTint="#CB4320"
+        android:textColor="#ffffff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editText"
         android:layout_alignEnd="@+id/editText"
-        android:layout_marginTop="0dp"
+        android:layout_alignStart="@+id/editText"
+        android:layout_marginBottom="10dp"
         android:text="공유 시작" />
 
-    <Button
-        android:id="@+id/clip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editText"
-        android:layout_marginTop="0dp"
-        android:layout_marginRight="5dp"
-        android:layout_toStartOf="@+id/start"
-        android:text="클립보드 복사" />
-
-    <Button
-        android:id="@+id/share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editText"
-        android:layout_marginTop="0dp"
-        android:layout_marginRight="5dp"
-        android:layout_toStartOf="@+id/clip"
-        android:text="SNS 내보내기" />
 </RelativeLayout>

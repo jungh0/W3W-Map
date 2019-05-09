@@ -21,32 +21,44 @@ public class IntroActivity extends AppIntro2 {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
 
+        String aa = "#617D8C";
+        String bb = "#0D0F0D";
+
         SliderPage sliderPage1 = new SliderPage();
         sliderPage1.setTitle("환영합니다!");
+        //sliderPage1.setTitleColor(Color.parseColor(bb));
         sliderPage1.setDescription("W3W 기반 실시간 위치 공유 서비스");
-        sliderPage1.setImageDrawable(R.drawable.main);
-        sliderPage1.setBgColor(Color.parseColor("#677DAD"));
+        sliderPage1.setDescColor(Color.parseColor(bb));
+        //sliderPage1.setImageDrawable(R.drawable.intro_1);
+        sliderPage1.setBgColor(Color.parseColor(aa));
         addSlide(AppIntroFragment.newInstance(sliderPage1));
 
         SliderPage sliderPage3 = new SliderPage();
         sliderPage3.setTitle("W3W - What3Words");
         sliderPage3.setDescription("어느곳에 있든 단어 3개로 찾아가세요!");
-        sliderPage3.setImageDrawable(R.drawable.open);
-        sliderPage3.setBgColor(Color.parseColor("#677DAD"));
+        sliderPage3.setImageDrawable(R.drawable.intro_2);
+        sliderPage3.setBgColor(Color.parseColor(aa));
         addSlide(AppIntroFragment.newInstance(sliderPage3));
 
         SliderPage sliderPage4 = new SliderPage();
         sliderPage4.setTitle("위치 공유");
         sliderPage4.setDescription("실시간 위치를 익명으로 공유하세요!!");
-        sliderPage4.setImageDrawable(R.drawable.location);
-        sliderPage4.setBgColor(Color.parseColor("#677DAD"));
+        sliderPage4.setImageDrawable(R.drawable.intro_3);
+        sliderPage4.setBgColor(Color.parseColor(aa));
         addSlide(AppIntroFragment.newInstance(sliderPage4));
 
         SliderPage sliderPage2 = new SliderPage();
         sliderPage2.setTitle("공유 기능");
         sliderPage2.setDescription("현재 위치 정보가 있는 단어 3개를 공유하세요!");
-        sliderPage2.setImageDrawable(R.drawable.share);
-        sliderPage2.setBgColor(Color.parseColor("#677DAD"));
+        sliderPage2.setImageDrawable(R.drawable.intro_5);
+        sliderPage2.setBgColor(Color.parseColor(aa));
+        addSlide(AppIntroFragment.newInstance(sliderPage2));
+
+        SliderPage sliderPage5 = new SliderPage();
+        sliderPage2.setTitle("실시간 확인");
+        sliderPage2.setDescription("이제 WAY를 사용 해보세요!");
+        sliderPage2.setImageDrawable(R.drawable.intro_4);
+        sliderPage2.setBgColor(Color.parseColor(aa));
         addSlide(AppIntroFragment.newInstance(sliderPage2));
 
         showSkipButton(false);

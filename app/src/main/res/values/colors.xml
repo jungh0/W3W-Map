@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#CB4320</color>
     <color name="colorAccent">#D81B60</color>
     <color name="bb">#2A2A2A</color>
-    <color name="green">#4A9C53</color>
+    <color name="green">#CB4320</color>
     <color name="red">#C75450</color>
+    <color name="share">#CB4320</color>
+    <color name="search">#4DAE50</color>
 </resources>
