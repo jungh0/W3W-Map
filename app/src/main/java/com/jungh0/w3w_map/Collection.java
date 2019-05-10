@@ -8,21 +8,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.valdesekamdem.library.mdtoast.MDToast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class Collection  {
 
@@ -48,33 +44,35 @@ public class Collection  {
         return result;
     }
 
-    public static  void init_network(){
-        if(android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-    }
-
     public static String gethttp(Context context, String sstr1) {
         if (isNetworkAvailable(context)) {
-            try {
-                HttpClient client = new DefaultHttpClient();
-                HttpGet post = new HttpGet();
-                post.setURI(new URI(sstr1));
-                HttpResponse resp = client.execute(post);
-                BufferedReader br = new BufferedReader(new InputStreamReader(resp.getEntity().getContent(),"utf8"));
-                String str = null;
-                StringBuilder sb = new StringBuilder();
-                while ((str = br.readLine()) != null) {
-                    sb.append(str).append("\n");
+            try{
+                URL Url = new URL(sstr1); // URL화 한다.
+                HttpURLConnection conn = (HttpURLConnection) Url.openConnection(); // URL을 연결한 객체 생성.
+                conn.setRequestMethod("GET"); // get방식 통신
+                conn.setInstanceFollowRedirects(true);  //you still need to handle redirect manully.
+                HttpURLConnection.setFollowRedirects(true);
+                //conn.setDoOutput(true); // 쓰기모드 지정
+                //conn.setDoInput(true); // 읽기모드 지정
+                //conn.setUseCaches(false); // 캐싱데이터를 받을지 안받을지
+                //conn.setDefaultUseCaches(false); // 캐싱데이터 디폴트 값 설정
+                //String strCookie = conn.getHeaderField("Set-Cookie"); //쿠키데이터 보관
+                InputStream is = conn.getInputStream(); //input스트림 개방
+                StringBuilder builder = new StringBuilder(); //문자열을 담기 위한 객체
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is,"UTF-8")); //문자열 셋 세팅
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line+ "\n");
                 }
-                br.close();
-                return sb.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
+
+                String result = builder.toString();
+                return result;
+
+            }catch(Exception e) {
             }
         }else{
-            ToastMD(context, "인터넷 연결에 실패 했습니다.",3);
+            //ToastMD(context, "인터넷 연결에 실패 했습니다.",3);
         }
         return "";
     }
@@ -87,7 +85,6 @@ public class Collection  {
         }catch (Exception e){
 
         }
-
     }
 
     public static boolean isNetworkAvailable(final Context context) {
@@ -115,4 +112,5 @@ public class Collection  {
         Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
         act.startActivity(chooser);
     }
+
 }

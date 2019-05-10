@@ -7,13 +7,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.KeyEvent;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,14 +19,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 
-
-import com.google.android.gms.tasks.Task;
 import com.pepperonas.materialdialog.MaterialDialog;
 import com.pepperonas.materialdialog.model.LicenseInfo;
 import com.raycoarana.codeinputview.CodeInputView;
@@ -40,20 +31,16 @@ import org.aviran.cookiebar2.CookieBar;
 import org.aviran.cookiebar2.OnActionClickListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 
-import static com.jungh0.w3w_map.Collection.ToastMD;
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     static EditText search;
-    static String deeplink = "";
     static Activity main_act;
-    Context main_cont;
     static String set__id = "";
+    Context main_cont;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        //첫 실행 튜토리얼
         SharedPreferences pref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
         boolean first = pref.getBoolean("isFirst", false);
         if(first==false){
@@ -89,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }else{
             //Log.d("Is first Time?", "not first");
         }
-
-
 
     }
 
@@ -106,23 +91,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -131,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
 
         if (id == R.id.opensource) {
             showMaterialDialogLicenseInfo();
@@ -170,14 +147,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             public void onClick(View view) {
                                 d.dismiss();
                                 if (auto_move.isChecked()){
-                                    MapsActivity.is_geting2 = 2;
+                                    MapsActivity.get_location_first_move = 2;
+                                }else{
+                                    MapsActivity.get_location_first_move = 0;
                                 }
                                 String codee = info.getCode();
                                 //showMaterialDialog("",codee);
                                 final Intent  intent = new Intent(getApplication(),GetLocationService.class);
                                 intent.putExtra("id",codee); //여기선 1로함
                                 startService(intent);
-                                MapsActivity.is_geting = 1;
+                                MapsActivity.is_geting = true;
                                 CookieBar.build(MainActivity.this)
                                         .setTitle("위치 추적중..")
                                         .setMessage("상대방의 위치가 실시간으로 표시됩니다.")
@@ -188,8 +167,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         .setAction("위치 추적 취소", new OnActionClickListener() {
                                             @Override
                                             public void onClick() {
-                                                MapsActivity.is_geting = 0;
-                                                MapsActivity.is_geting2 = 0;
+                                                MapsActivity.is_geting = false;
+                                                MapsActivity.get_location_first_move = 0;
                                                 stopService(intent);
                                                 GetLocationService.switch_ = false;
                                                 showMaterialDialog("","위치 추척이 취소되었습니다.");
@@ -203,8 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .show();
     }
 
-    private String[] ITEMS = new String[]{"터치 한 위치 공유 (기본)", "현재 위치 자동 공유 (조작이 제한 됩니다.)"};
-
+    private String[] ITEMS = new String[]{"터치 위치 수동 전송 (기본)", "현재 위치 자동 전송 (조작이 제한 됩니다.)"};
     private void showMaterialDialogShare() {
         new MaterialDialog.Builder(this)
                 .title("위치 공유를 시작합니다.")
@@ -244,11 +222,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onClick(View v, int position, long id) {
                         super.onClick(v, position, id);
                         //showToast("onClick (" + ITEMS[position] + ")");
-
                         MapsActivity.is_get_auto = position;
                         set__id = ss;
-                        MapsActivity.is_seting = 1;
-
+                        MapsActivity.is_seting = true;
                         CookieBar.build(MainActivity.this)
                                 .setTitle("위치 공유중.. (공유 코드 : " + ss + ")")
                                 .setMessage("터치하는 위치 / 현재위치 가 실시간으로 공유됩니다.")
@@ -259,17 +235,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 .setAction("위치 공유 취소", new OnActionClickListener() {
                                     @Override
                                     public void onClick() {
-                                        MapsActivity.is_seting = 0;
+                                        MapsActivity.is_seting = false;
                                         MapsActivity.is_get_auto = -1;
                                         showMaterialDialog("","위치 공유가 취소되었습니다.");
                                     }
                                 })
                                 .show();
-
                     }
                 })
                 .show();
-
     }
 
     private void showMaterialDialog(String str,String str2) {
@@ -398,7 +372,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
                         "See the License for the specific language governing permissions and\n" +
                         "limitations under the License."));
-
 
         return licenseInfos;
     }

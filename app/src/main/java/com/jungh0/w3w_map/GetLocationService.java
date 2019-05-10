@@ -4,18 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.aviran.cookiebar2.CookieBar;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URL;
 
 import static com.jungh0.w3w_map.MapsActivity.get_long;
 import static com.jungh0.w3w_map.MapsActivity.get_lati;
@@ -55,6 +45,7 @@ public class GetLocationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        exit();
     }
 
     private void processCommand (Intent intent) {
@@ -62,7 +53,6 @@ public class GetLocationService extends Service {
         final String id = intent.getStringExtra("id");
 
         mHandler = new Handler();
-
         Thread t = new Thread(new Runnable(){
             @Override
             public void run() {
@@ -83,7 +73,6 @@ public class GetLocationService extends Service {
             }
         });
         t.start();
-
     }
 
     private void main_r(String str){
@@ -97,12 +86,7 @@ public class GetLocationService extends Service {
                         get_long = Double.parseDouble(get.split(" ")[0]);
                         get_lati = Double.parseDouble(get.split(" ")[1]);
                     }else{
-                        switch_ = false;
-                        MapsActivity.is_geting = 0;
-                        MapsActivity.is_geting2 = 0;
-                        Collection.ToastMD(getBaseContext(), "정보가 없습니다. 공유를 종료합니다.", 4);
-                        CookieBar.dismiss(MainActivity.main_act);
-                        stopSelf();
+                        exit();
                     }
                 }
             });
@@ -110,17 +94,18 @@ public class GetLocationService extends Service {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    switch_ = false;
-                    MapsActivity.is_geting = 0;
-                    MapsActivity.is_geting2 = 0;
-                    Collection.ToastMD(getBaseContext(), "정보가 없습니다. 공유를 종료합니다.", 4);
-                    CookieBar.dismiss(MainActivity.main_act);
-                    stopSelf();
+                    exit();
                 }
             });
         }
-
-
     }
 
+    private void exit(){
+        switch_ = false;
+        MapsActivity.is_geting = false;
+        MapsActivity.get_location_first_move = 0;
+        Collection.ToastMD(getBaseContext(), "정보가 없습니다. 공유를 종료합니다.", 4);
+        CookieBar.dismiss(MainActivity.main_act);
+        stopSelf();
+    }
 }
