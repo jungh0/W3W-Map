@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        card_view:umanoPanelHeight="115dp"
+        card_view:umanoPanelHeight="125dp"
         card_view:umanoShadowHeight="4dp"
         android:background="#F2EEE7">
 

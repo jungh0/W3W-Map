@@ -53,13 +53,14 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="15dp"
+        card_view:cardCornerRadius="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        card_view:cardElevation="20dp"
+        card_view:cardElevation="5dp"
         android:padding="10dp">
+
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab2"
@@ -69,87 +70,118 @@
             android:clickable="true"
             android:src="@drawable/copy"
             card_view:backgroundTint="#FFFFFFFF"
-            android:layout_gravity="end|top"/>
+            android:layout_gravity="end|bottom"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="50dp"
+                android:layout_height="10dp"
+                android:layout_centerHorizontal="true"
+                android:alpha="0.5"
+                card_view:srcCompat="@drawable/h_bar" />
 
 
             <TextView
                 android:id="@+id/w3w_t"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
                 android:layout_marginLeft="0dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="0dp"
-                android:text="---.---.---"
+                android:gravity="center"
                 android:singleLine="true"
-                android:textSize="25sp" />
+                android:layout_centerHorizontal="true"
+                android:text="---.---.---"
+                android:textColor="#C75450"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/upbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_below="@+id/w3w_t"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                android:textColor="#ffffff"
+                android:background="@drawable/round_bg"
+                android:text="자세히" />
+
 
             <TextView
                 android:id="@+id/country"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/w3w_t"
+                android:layout_below="@+id/upbtn"
+                android:layout_alignParentStart="true"
                 android:layout_alignLeft="@+id/w3w_t"
                 android:layout_marginTop="15dp"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:text="가까운 장소 : "
                 android:singleLine="true"/>
 
             <TextView
                 android:id="@+id/country_t"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/w3w_t"
+                android:layout_below="@+id/upbtn"
                 android:layout_toRightOf="@+id/country"
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="5dp"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:text="---"
                 android:singleLine="true"/>
 
             <TextView
                 android:id="@+id/nearestPlace"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/country"
                 android:layout_alignLeft="@+id/w3w_t"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="국가 : "
                 android:singleLine="true"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/nearestPlace_t"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/country_t"
                 android:layout_toRightOf="@+id/nearestPlace"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginLeft="5dp"
                 android:singleLine="true"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:text="---" />
 
             <TextView
                 android:id="@+id/longitude"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/nearestPlace"
                 android:layout_alignStart="@+id/w3w_t"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="경도 : "
                 android:singleLine="true"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/longitude_t"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/longitude"
@@ -157,21 +189,23 @@
                 android:layout_marginLeft="5dp"
                 android:text="---"
                 android:singleLine="true"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/latitude"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/longitude"
                 android:layout_alignStart="@+id/w3w_t"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="위도 : "
                 android:singleLine="true"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/latitude_t"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/latitude"
@@ -179,7 +213,8 @@
                 android:layout_marginLeft="5dp"
                 android:text="---"
                 android:singleLine="true"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
+
 
         </RelativeLayout>
 

@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -81,7 +82,19 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         final FrameLayout willgone = (FrameLayout) card_up.findViewById(R.id.willgone);
         willgone.setVisibility(View.GONE);
 
+
         final SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
+        final Button upbtn = (Button) card_up.findViewById(R.id.upbtn);
+        upbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mLayout.getPanelState().toString().equals("EXPANDED")){
+                    mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                }else{
+                    mLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                }
+            }
+        });
         mLayout.setFadeOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,17 +112,23 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                 String tmp = newState.toString();
                 String tmp2 = previousState.toString();
                 if (tmp.equals("DRAGGING")) {
-                    if (tmp2.equals("EXPANDED"))
+                    if (tmp2.equals("EXPANDED")){
                         willgone.setVisibility(View.GONE);
+                        upbtn.setText("자세히");
+                    }
                 } else if (tmp.equals("EXPANDED")) {
                     willgone.setVisibility(View.VISIBLE);
+                    upbtn.setText("닫기");
                 } else if (tmp.equals("COLLAPSED")) {
                     willgone.setVisibility(View.GONE);
+                    upbtn.setText("자세히");
                 }
             }
         });
         mLayout.setShadowHeight(0);
         mLayout.setOverlayed(true);
+
+
 
         FloatingActionButton copy_word = rootView.findViewById(R.id.fab2);
         copy_word.setOnClickListener(new View.OnClickListener() {
@@ -253,7 +272,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!is_geting && is_get_auto != 1){
+                if (is_get_auto != 1){
                     Float zoom = Float.parseFloat(mGoogleMap.getCameraPosition().toString().split("zoom=")[1].split(",")[0]) + 1;
                     moveMap(mGoogleMap, last_lati, last_long,zoom);
                 }else{
@@ -267,7 +286,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         down.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!is_geting && is_get_auto != 1){
+                if (is_get_auto != 1){
                     Float zoom = Float.parseFloat(mGoogleMap.getCameraPosition().toString().split("zoom=")[1].split(",")[0]) - 1;
                     moveMap(mGoogleMap, last_lati, last_long,zoom);
                 }else{
@@ -313,7 +332,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         Log.v(TAG, "mapMoved: " + gMap);
         LatLng latlng = new LatLng(latitude, longitude);
         CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(latlng, size);
-        gMap.addMarker(new MarkerOptions().position(latlng).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pin",100,100))));
+        gMap.addMarker(new MarkerOptions().position(latlng).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pin2",100,100))));
         gMap.moveCamera(cu);
     }
 
@@ -330,7 +349,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         Log.v(TAG, "mapMarked: " + gMap);
         MarkerOptions mOptions = new MarkerOptions();
         //mOptions.title("마커 좌표");//mOptions.snippet(latitude + ", " + longitude);
-        mOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pin",100,100)));
+        mOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pin2",100,100)));
         mOptions.position(new LatLng(latitude, longitude));
 
         mGoogleMap.clear();

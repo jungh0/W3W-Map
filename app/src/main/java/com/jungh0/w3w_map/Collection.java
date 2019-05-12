@@ -44,7 +44,7 @@ public class Collection  {
         return result;
     }
 
-    public static String gethttp(Context context, String sstr1) {
+    public static String gethttp(final Context context, String sstr1) {
         if (isNetworkAvailable(context)) {
             try{
                 URL Url = new URL(sstr1); // URL화 한다.
@@ -66,7 +66,7 @@ public class Collection  {
                     builder.append(line+ "\n");
                 }
 
-                String result = builder.toString();
+                final String result = builder.toString();
                 return result;
 
             }catch(Exception e) {
