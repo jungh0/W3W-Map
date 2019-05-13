@@ -166,7 +166,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
             public void run() {
                 while (true) {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(5000);
                         if (!Collection.isNetworkAvailable(getContext())) {
                             mHandler.post(new Runnable() {
                                 @Override
