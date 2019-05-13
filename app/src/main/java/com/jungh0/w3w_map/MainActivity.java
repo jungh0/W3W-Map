@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         search = (EditText) toolbar.findViewById(R.id.search);
+        //search.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+
 
         getSupportActionBar().setElevation(0);
         //getSupportActionBar().hide();
@@ -73,7 +77,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             SharedPreferences.Editor editor = pref.edit();
             editor.putBoolean("isFirst",true);
             editor.commit();
-            startActivity(new Intent(this, IntroActivity.class));
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(new Intent(this, IntroActivity.class));
+            }
+
         }else{
             //Log.d("Is first Time?", "not first");
         }

@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -146,16 +147,21 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                MainActivity.search.setOnKeyListener(new View.OnKeyListener() {
+                MainActivity.search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                            keyboard_search();
-                            return true;
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        switch (actionId) {
+                            case EditorInfo.IME_ACTION_SEARCH:
+                                keyboard_search();
+                                break;
+                            default:
+                                return false;
                         }
-                        return false;
+                        return true;
                     }
                 });
+
+
             }
         }, 1000);
 
