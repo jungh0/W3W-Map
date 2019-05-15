@@ -49,8 +49,10 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
     Handler mHandler = null;
 
     double last_long , last_lati;
-    TextView word_3, country, nearest, longitude_t, latitude_t;
+    TextView word_3, country, nearest, longitude_t, latitude_t, share_code;
     ViewGroup rootView;
+
+    RelativeLayout share_hide;
 
     static Boolean is_seting = false; // 위치 공유할 때 온오프
     static int is_get_auto = -1; //현재 위치 계속 전송 온오프 -1안함 0한번만 1계속
@@ -78,11 +80,12 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         nearest = (TextView) card_up.findViewById(R.id.country_t);
         longitude_t = (TextView) card_up.findViewById(R.id.longitude_t);
         latitude_t = (TextView) card_up.findViewById(R.id.latitude_t);
+        share_hide = (RelativeLayout) card_up.findViewById(R.id.share_view);
+        share_code = (TextView) card_up.findViewById(R.id.share_code);
 
         //슬라이드 업 패널 리스너
         final FrameLayout willgone = (FrameLayout) card_up.findViewById(R.id.willgone);
         willgone.setVisibility(View.GONE);
-
 
         final SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout);
         final Button upbtn = (Button) card_up.findViewById(R.id.upbtn);
@@ -129,13 +132,19 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         mLayout.setShadowHeight(0);
         mLayout.setOverlayed(true);
 
-
-
         FloatingActionButton copy_word = rootView.findViewById(R.id.fab2);
         copy_word.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Collection.clip_copy(getActivity(),getContext(),word_3.getText().toString());
+            }
+        });
+
+        Button share_code_sns = rootView.findViewById(R.id.share_sns);
+        share_code_sns.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Collection.share_sns(getActivity(),MainActivity.set__id.toString());
             }
         });
 
@@ -160,8 +169,6 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                         return true;
                     }
                 });
-
-
             }
         }, 1000);
 
@@ -187,7 +194,6 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
             }
         }).start();
 
-
         new Thread(new Runnable(){
             @Override
             public void run() {
@@ -199,6 +205,15 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                         }else if(is_get_auto == 0){
                             startLocationUpdates(true);
                             is_get_auto = -1;
+                        }else{
+                            if(share_hide.getVisibility() == View.VISIBLE && !is_seting){
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        share_hide.setVisibility(View.GONE);
+                                    }
+                                });
+                            }
                         }
                         if (is_geting){
                             mHandler.post(new Runnable() {
@@ -383,7 +398,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                             word_parse = get_w3w.split("\"lat\":")[3].split("\\}")[0];
                             latitude_t.setText(word_parse);
                         } catch (Exception e) {
-                            word_3.setText("API 오류2");
+                            word_3.setText("---.---.---");
                         }
                     }
                 });
@@ -391,6 +406,8 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         }).start();
 
         if (is_seting){
+            share_hide.setVisibility(View.VISIBLE);
+            share_code.setText("공유코드 : " + MainActivity.set__id);
             new Thread(new Runnable(){
                 @Override
                 public void run() {
@@ -470,7 +487,6 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                                         }
                                     }
                                 });
-
                             }
                         }).start();
                     }

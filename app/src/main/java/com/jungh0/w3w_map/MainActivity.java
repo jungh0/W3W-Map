@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         search = (EditText) toolbar.findViewById(R.id.search);
         //search.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
 
-
         getSupportActionBar().setElevation(0);
         //getSupportActionBar().hide();
 
@@ -235,8 +234,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         set__id = ss;
                         MapsActivity.is_seting = true;
                         CookieBar.build(MainActivity.this)
-                                .setTitle("위치 공유중.. (공유 코드 : " + ss + ")")
-                                .setMessage("터치하는 위치 / 현재위치 가 실시간으로 공유됩니다.")
+                                .setTitle("위치 공유중..")
+                                .setMessage("터치/현재 위치가 실시간으로 공유됩니다.")
                                 .setCookiePosition(CookieBar.TOP)
                                 .setEnableAutoDismiss(false)
                                 .setSwipeToDismiss(false)
