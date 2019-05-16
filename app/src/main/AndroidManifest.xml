@@ -31,17 +31,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-<<<<<<< HEAD
-=======
-
-
-                    <action android:name="android.intent.action.VIEW"/>
-                    <category android:name="android.intent.category.DEFAULT" />
-                    <category android:name="android.intent.category.BROWSABLE"/>
-                    <data android:scheme="myapp" android:host="start"/>
-
-
->>>>>>> a4abc6b3a26b50fa0462d69960b8e15002d59e5f
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
