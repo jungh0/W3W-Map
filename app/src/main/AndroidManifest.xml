@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.jungh0.w3w_map">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -19,13 +20,28 @@
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
         <activity
             android:name=".IntroActivity"
-            android:label="about" />
+            android:label="about">
+
+
+
+        </activity>
         <activity
             android:name=".MainActivity"
             android:label="WAY"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+<<<<<<< HEAD
+=======
+
+
+                    <action android:name="android.intent.action.VIEW"/>
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <category android:name="android.intent.category.BROWSABLE"/>
+                    <data android:scheme="myapp" android:host="start"/>
+
+
+>>>>>>> a4abc6b3a26b50fa0462d69960b8e15002d59e5f
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
