@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static android.content.Intent.ACTION_VIEW;
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static Activity main_act;
     static String set__id = "";
     Context main_cont;
+    String s_data = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +87,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }else{
             //Log.d("Is first Time?", "not first");
+        }
+
+        Uri data = this.getIntent().getData();
+        if (data != null && data.isHierarchical()) {
+            String uri = this.getIntent().getDataString();
+            s_data = uri;
+            showMaterialDialogSearch();
+            //Log.i("MyApp", "Deep link clicked " + uri);
         }
 
     }
@@ -148,6 +160,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onShow(final AlertDialog d) {
                         super.onShow(d);
                         final CodeInputView info = (CodeInputView) d.findViewById(R.id.editText);
+                        if (s_data != null){
+                            info.setCode(s_data);
+                            s_data = null;
+                        }
                         Button start = (Button) d.findViewById(R.id.start) ;
                         final CheckBox auto_move = (CheckBox) d.findViewById(R.id.checkBox);
                         start.setOnClickListener(new Button.OnClickListener() {
