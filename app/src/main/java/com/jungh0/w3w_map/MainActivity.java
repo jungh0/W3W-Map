@@ -82,7 +82,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             editor.commit();
 
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                startActivity(new Intent(this, IntroActivity.class));
+                try{
+                    startActivity(new Intent(this, IntroActivity.class));
+                }catch (Exception e){
+
+                }
+
             }
 
         }else{

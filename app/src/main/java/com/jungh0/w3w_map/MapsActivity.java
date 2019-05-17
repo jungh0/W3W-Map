@@ -146,7 +146,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         share_code_sns.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Collection.share_sns(getActivity(),MainActivity.set__id.toString());
+                Collection.share_sns(getActivity(),"http://thousand419.dothome.co.kr/deeplink.php?key=" + MainActivity.set__id.toString());
             }
         });
 
@@ -355,7 +355,11 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         Log.v(TAG, "mapMoved: " + gMap);
         LatLng latlng = new LatLng(latitude, longitude);
         CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(latlng, size);
-        gMap.addMarker(new MarkerOptions().position(latlng).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pin2",100,100))));
+        try{
+            gMap.addMarker(new MarkerOptions().position(latlng).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pin2",100,100))));
+        }catch (Exception e){
+            gMap.addMarker(new MarkerOptions().position(latlng));
+        }
         gMap.moveCamera(cu);
     }
 
@@ -372,7 +376,11 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         Log.v(TAG, "mapMarked: " + gMap);
         MarkerOptions mOptions = new MarkerOptions();
         //mOptions.title("마커 좌표");//mOptions.snippet(latitude + ", " + longitude);
-        mOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pin2",100,100)));
+        try{
+            mOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pin2",100,100)));
+        }catch (Exception e){
+
+        }
         mOptions.position(new LatLng(latitude, longitude));
 
         mGoogleMap.clear();

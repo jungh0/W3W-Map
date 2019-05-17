@@ -88,7 +88,12 @@ public class Collection  {
     }
 
     public static boolean isNetworkAvailable(final Context context) {
-        return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
+        try{
+            return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
+        }catch (Exception e){
+            return  false;
+        }
+
     }
 
     public static String split_(String m, String s1 ,int c1 ,String s2, int c2) {
