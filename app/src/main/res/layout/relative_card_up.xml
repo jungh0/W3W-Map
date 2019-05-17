@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="25dp"
+            android:layout_marginRight="16dp"
             android:clickable="true"
             android:src="@drawable/kakao"
             card_view:backgroundTint="#F8D600"
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="100dp"
+            android:layout_marginRight="91dp"
             android:clickable="true"
             android:src="@drawable/sms"
             android:layout_gravity="end|top"
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="175dp"
+            android:layout_marginRight="166dp"
             android:clickable="true"
             android:src="@drawable/sms"
             android:layout_gravity="end|top"
@@ -49,15 +49,75 @@
     </FrameLayout>
 
     <android.support.v7.widget.CardView
+        android:id="@+id/new_card"
         android:layout_below="@+id/willgone"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:backgroundTint="#34A853"
+        android:layout_height="80dp"
+        card_view:cardCornerRadius="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="-17dp"
+        card_view:cardElevation="5dp"
+        android:padding="0dp">
+
+        <TextView
+            android:id="@+id/country_t2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="110dp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="---"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.CardView
+            android:layout_below="@+id/willgone"
+            android:orientation="vertical"
+            android:layout_width="110dp"
+            android:layout_gravity="right"
+            android:backgroundTint="#2E8646"
+            android:layout_alignParentRight="true"
+            android:layout_height="80dp"
+            card_view:cardCornerRadius="20dp"
+            card_view:cardElevation="5dp"
+            android:padding="0dp">
+
+            <TextView
+                android:id="@+id/nearestPlace_t2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:layout_centerHorizontal="true"
+                android:text="---"
+                android:layout_marginTop="8dp"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_main"
+        android:layout_below="@+id/new_card"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="-20dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="-17dp"
         card_view:cardElevation="5dp"
         android:padding="10dp">
 
@@ -66,7 +126,8 @@
             android:id="@+id/fab2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="41dp"
             android:clickable="true"
             android:src="@drawable/copy"
             card_view:backgroundTint="#FFFFFFFF"
@@ -79,7 +140,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="40dp">
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -99,6 +160,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:layout_marginTop="5dp"
                     android:id="@+id/share_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -117,7 +179,7 @@
                     android:layout_width="120dp"
                     android:layout_height="30dp"
                     android:layout_below="@+id/share_code"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
                     android:layout_centerHorizontal="true"
                     android:textColor="#ffffff"
@@ -133,6 +195,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
+                android:layout_marginTop="5dp"
                 android:layout_below="@+id/share_view"
                 android:gravity="center"
                 android:singleLine="true"
@@ -150,8 +213,11 @@
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
                 android:textColor="#ffffff"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:background="@drawable/round_bg"
-                android:text="자세히" />
+                android:visibility="gone"
+                android:text="정보 상세히 보기" />
 
 
             <TextView
@@ -162,7 +228,7 @@
                 android:layout_below="@+id/upbtn"
                 android:layout_alignParentStart="true"
                 android:layout_alignLeft="@+id/w3w_t"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="20dp"
                 android:textSize="18sp"
                 android:text="가까운 장소 : "
                 android:singleLine="true"/>
@@ -174,7 +240,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/upbtn"
                 android:layout_toRightOf="@+id/country"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="5dp"
                 android:textSize="18sp"
                 android:text="---"
@@ -187,7 +253,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/country"
                 android:layout_alignLeft="@+id/w3w_t"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:text="국가 : "
                 android:singleLine="true"
                 android:textSize="18sp"/>
@@ -199,7 +265,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/country_t"
                 android:layout_toRightOf="@+id/nearestPlace"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
                 android:singleLine="true"
                 android:textSize="18sp"
@@ -212,7 +278,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/nearestPlace"
                 android:layout_alignStart="@+id/w3w_t"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:text="경도 : "
                 android:singleLine="true"
                 android:textSize="18sp"/>
@@ -236,7 +302,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/longitude"
                 android:layout_alignStart="@+id/w3w_t"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:text="위도 : "
                 android:singleLine="true"
                 android:textSize="18sp"/>
@@ -253,13 +319,14 @@
                 android:singleLine="true"
                 android:textSize="18sp"/>
 
-
         </RelativeLayout>
 
 
 
 
     </android.support.v7.widget.CardView>
+
+
 
 </RelativeLayout>
 

@@ -92,6 +92,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Uri data = this.getIntent().getData();
         if (data != null && data.isHierarchical()) {
             String uri = this.getIntent().getDataString();
+            //showMaterialDialog("개발자 이메일",uri);
+            uri = uri.replace("way_w3w://start/","").replace("/","").replace("?","");
+            //Collection.ToastMD(getBaseContext(),uri,1);
             s_data = uri;
             showMaterialDialogSearch();
             //Log.i("MyApp", "Deep link clicked " + uri);

@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        card_view:umanoPanelHeight="125dp"
+        card_view:umanoPanelHeight="135dp"
         card_view:umanoShadowHeight="4dp"
         android:background="#F2EEE7">
 
@@ -31,8 +31,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
-                android:layout_marginRight="25dp"
-                android:layout_marginBottom="131dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="139dp"
                 android:clickable="true"
                 android:src="@drawable/my_location"
                 card_view:backgroundTint="#FFFFFFFF" />
@@ -42,8 +42,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
-                android:layout_marginRight="25dp"
-                android:layout_marginBottom="200dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="208dp"
                 android:clickable="true"
                 android:src="@drawable/plus"
                 card_view:backgroundTint="#FFFFFFFF" />
@@ -53,8 +53,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
-                android:layout_marginRight="25dp"
-                android:layout_marginBottom="270dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="278dp"
                 android:clickable="true"
                 android:src="@drawable/minus"
                 card_view:backgroundTint="#FFFFFFFF" />

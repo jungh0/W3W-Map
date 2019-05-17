@@ -21,9 +21,6 @@
         <activity
             android:name=".IntroActivity"
             android:label="about">
-
-
-
         </activity>
         <activity
             android:name=".MainActivity"
@@ -35,7 +32,7 @@
             </intent-filter>
 
             <intent-filter>
-                <data android:scheme="way_w3w" />
+                <data android:scheme="way_w3w" android:host="start"/>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

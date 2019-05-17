@@ -49,7 +49,7 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
     Handler mHandler = null;
 
     double last_long , last_lati;
-    TextView word_3, country, nearest, longitude_t, latitude_t, share_code;
+    TextView word_3, country,country2, nearest,nearest2, longitude_t, latitude_t, share_code;
     ViewGroup rootView;
 
     RelativeLayout share_hide;
@@ -77,7 +77,9 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         inflater2.inflate(R.layout.relative_card_up, card_up, true);
         word_3 = (TextView) card_up.findViewById(R.id.w3w_t);
         country = (TextView) card_up.findViewById(R.id.nearestPlace_t);
+        country2 = (TextView) card_up.findViewById(R.id.nearestPlace_t2);
         nearest = (TextView) card_up.findViewById(R.id.country_t);
+        nearest2 = (TextView) card_up.findViewById(R.id.country_t2);
         longitude_t = (TextView) card_up.findViewById(R.id.longitude_t);
         latitude_t = (TextView) card_up.findViewById(R.id.latitude_t);
         share_hide = (RelativeLayout) card_up.findViewById(R.id.share_view);
@@ -118,14 +120,14 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                 if (tmp.equals("DRAGGING")) {
                     if (tmp2.equals("EXPANDED")){
                         willgone.setVisibility(View.GONE);
-                        upbtn.setText("자세히");
+                        upbtn.setText("정보 상세히 보기");
                     }
                 } else if (tmp.equals("EXPANDED")) {
                     willgone.setVisibility(View.VISIBLE);
                     upbtn.setText("닫기");
                 } else if (tmp.equals("COLLAPSED")) {
                     willgone.setVisibility(View.GONE);
-                    upbtn.setText("자세히");
+                    upbtn.setText("정보 상세히 보기");
                 }
             }
         });
@@ -391,8 +393,10 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
                             word_3.setText(word_parse);
                             word_parse = get_w3w.split("\"country\":\"")[1].split("\"")[0];
                             country.setText(word_parse);
+                            country2.setText(word_parse);
                             word_parse = get_w3w.split("\"nearestPlace\":\"")[1].split("\"")[0];
                             nearest.setText(word_parse);
+                            nearest2.setText(word_parse);
                             word_parse = get_w3w.split("\"lng\":")[3].split(",")[0];
                             longitude_t.setText(word_parse);
                             word_parse = get_w3w.split("\"lat\":")[3].split("\\}")[0];
