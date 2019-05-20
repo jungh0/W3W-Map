@@ -2,26 +2,23 @@ package com.jungh0.w3w_map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
-import android.support.v4.view.GravityCompat;
-import android.support.v7.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
+import com.google.android.material.navigation.NavigationView;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -37,14 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static android.content.Intent.ACTION_VIEW;
-
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     static EditText search;
     static Activity main_act;
     static String set__id = "";
+
     Context main_cont;
     String s_data = null;
 
@@ -55,14 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        search = (EditText) toolbar.findViewById(R.id.search);
-        //search.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-
         getSupportActionBar().setElevation(0);
-        //getSupportActionBar().hide();
-
-        main_act = MainActivity.this;
-        main_cont = getApplicationContext();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -72,39 +60,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        search = (EditText) toolbar.findViewById(R.id.search);
+        main_act = MainActivity.this;
+        main_cont = getApplicationContext();
+
+        check_star();
+        check_deeplink();
+    }
+
+    public void check_star(){
         //첫 실행 튜토리얼
         SharedPreferences pref = getSharedPreferences("isFirst", Activity.MODE_PRIVATE);
         boolean first = pref.getBoolean("isFirst", false);
         if(first==false){
-           // Log.d("Is first Time?", "first");
+            // Log.d("Is first Time?", "first");
             SharedPreferences.Editor editor = pref.edit();
             editor.putBoolean("isFirst",true);
             editor.commit();
-
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 try{
                     startActivity(new Intent(this, IntroActivity.class));
                 }catch (Exception e){
-
                 }
-
             }
-
         }else{
             //Log.d("Is first Time?", "not first");
         }
+    }
 
+    public void check_deeplink(){
+        //딥링크
         Uri data = this.getIntent().getData();
         if (data != null && data.isHierarchical()) {
             String uri = this.getIntent().getDataString();
             //showMaterialDialog("개발자 이메일",uri);
             uri = uri.replace("way_w3w://start/","").replace("/","").replace("?","");
-            //Collection.ToastMD(getBaseContext(),uri,1);
             s_data = uri;
             showMaterialDialogSearch();
-            //Log.i("MyApp", "Deep link clicked " + uri);
         }
-
     }
 
     @Override
@@ -141,12 +134,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.opensource) {
             showMaterialDialogLicenseInfo();
         } else if (id == R.id.contact) {
-            ClipboardManager clipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
-            ClipData clipData = ClipData.newPlainText("email", "iveinvalue@gmail.com");
-            clipboardManager.setPrimaryClip(clipData);
+            Collection.clip_copy(this, getApplicationContext(), "iveinvalue@gmail.com");
             showMaterialDialog("개발자 이메일","클립보드에 복사 되었습니다.");
         } else if (id == R.id.version) {
-            showMaterialDialog("버전 정보","1.0.1(23)");
+            showMaterialDialog("버전 정보","1.0.4(26)");
         } else if (id == R.id.intro) {
             startActivity(new Intent(this, IntroActivity.class));
         } else if (id == R.id.location_share) {
@@ -178,39 +169,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             @Override
                             public void onClick(View view) {
                                 d.dismiss();
-                                if (auto_move.isChecked()){
-                                    MapsActivity.get_location_first_move = 2;
-                                }else{
-                                    MapsActivity.get_location_first_move = 0;
-                                }
+                                int first_move;
+                                if (auto_move.isChecked())
+                                    first_move = 2;
+                                else
+                                    first_move = 0;
                                 String codee = info.getCode();
-                                //showMaterialDialog("",codee);
-                                final Intent  intent = new Intent(getApplication(),GetLocationService.class);
-                                intent.putExtra("id",codee); //여기선 1로함
+
+                                final Intent intent = new Intent(getApplication(),GetLocationService.class);
+                                intent.putExtra("id",codee);
+                                intent.putExtra("first_move",first_move); //여기선 1로함
                                 startService(intent);
-                                MapsActivity.is_geting = true;
-                                CookieBar.build(MainActivity.this)
-                                        .setTitle("위치 추적중..")
-                                        .setMessage("상대방의 위치가 실시간으로 표시됩니다.")
-                                        .setCookiePosition(CookieBar.TOP)
-                                        .setEnableAutoDismiss(false)
-                                        .setSwipeToDismiss(false)
-                                        .setBackgroundColor(R.color.search)
-                                        .setAction("위치 추적 취소", new OnActionClickListener() {
-                                            @Override
-                                            public void onClick() {
-                                                MapsActivity.is_geting = false;
-                                                MapsActivity.get_location_first_move = 0;
-                                                stopService(intent);
-                                                GetLocationService.switch_ = false;
-                                                showMaterialDialog("","위치 추척이 취소되었습니다.");
-                                            }
-                                        })
-                                        .show();
+
+                                make_cookie("위치 추적중..","상대방의 위치가 실시간으로 표시됩니다.","위치 추적 취소",
+                                        new OnActionClickListener() {
+                                    @Override
+                                    public void onClick() {
+                                        stopService(intent);
+                                        showMaterialDialog("","위치 추척이 취소되었습니다.");
+                                    }
+                                });
                             }
                         });
                     }
                 })
+                .show();
+    }
+
+    public void make_cookie(String title, String message,String cancel_str,OnActionClickListener onActionClickListener){
+        CookieBar.build(MainActivity.this)
+                .setTitle(title)
+                .setMessage(message)
+                .setCookiePosition(CookieBar.TOP)
+                .setEnableAutoDismiss(false)
+                .setSwipeToDismiss(false)
+                .setBackgroundColor(R.color.search)
+                .setAction(cancel_str, onActionClickListener)
                 .show();
     }
 
@@ -257,22 +251,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         MapsActivity.is_get_auto = position;
                         set__id = ss;
                         MapsActivity.is_seting = true;
-                        CookieBar.build(MainActivity.this)
-                                .setTitle("위치 공유중..")
-                                .setMessage("터치/현재 위치가 실시간으로 공유됩니다.")
-                                .setCookiePosition(CookieBar.TOP)
-                                .setEnableAutoDismiss(false)
-                                .setSwipeToDismiss(false)
-                                .setBackgroundColor(R.color.share)
-                                .setAction("위치 공유 취소", new OnActionClickListener() {
+
+                        make_cookie("위치 공유중..","터치/현재 위치가 실시간으로 공유됩니다.","위치 공유 취소",
+                                new OnActionClickListener() {
                                     @Override
                                     public void onClick() {
                                         MapsActivity.is_seting = false;
                                         MapsActivity.is_get_auto = -1;
                                         showMaterialDialog("","위치 공유가 취소되었습니다.");
                                     }
-                                })
-                                .show();
+                                });
                     }
                 })
                 .show();
@@ -299,97 +287,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @NonNull
     private List<LicenseInfo> getLicenseInfos() {
         List<LicenseInfo> licenseInfos = new ArrayList<>();
-
         licenseInfos.add(new LicenseInfo(
                 "AndroidSlidingUpPanel",
-                "https://github.com/umano/AndroidSlidingUpPanel",
-                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
-                        "you may not use this file except in compliance with the License.\n" +
-                        "You may obtain a copy of the License at\n" +
-                        "\n" +
-                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
-                        "\n" +
-                        "Unless required by applicable law or agreed to in writing, software\n" +
-                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
-                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
-                        "See the License for the specific language governing permissions and\n" +
-                        "limitations under the License."));
-
+                "https://github.com/umano/AndroidSlidingUpPanel",getString(R.string.Apache)));
         licenseInfos.add(new LicenseInfo(
                 "MaterialDesign-Toast",
-                "https://github.com/pepperonas/MaterialDialog",
-                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
-                        "you may not use this file except in compliance with the License.\n" +
-                        "You may obtain a copy of the License at\n" +
-                        "\n" +
-                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
-                        "\n" +
-                        "Unless required by applicable law or agreed to in writing, software\n" +
-                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
-                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
-                        "See the License for the specific language governing permissions and\n" +
-                        "limitations under the License."));
-
+                "https://github.com/pepperonas/MaterialDialog",getString(R.string.Apache)));
         licenseInfos.add(new LicenseInfo(
                 "MaterialDialog",
-                "https://github.com/pepperonas/MaterialDialog",
-                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
-                        "you may not use this file except in compliance with the License.\n" +
-                        "You may obtain a copy of the License at\n" +
-                        "\n" +
-                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
-                        "\n" +
-                        "Unless required by applicable law or agreed to in writing, software\n" +
-                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
-                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
-                        "See the License for the specific language governing permissions and\n" +
-                        "limitations under the License."));
-
+                "https://github.com/pepperonas/MaterialDialog",getString(R.string.Apache)));
         licenseInfos.add(new LicenseInfo(
                 "AppIntro",
-                "https://github.com/AppIntro/AppIntro",
-                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
-                        "you may not use this file except in compliance with the License.\n" +
-                        "You may obtain a copy of the License at\n" +
-                        "\n" +
-                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
-                        "\n" +
-                        "Unless required by applicable law or agreed to in writing, software\n" +
-                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
-                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
-                        "See the License for the specific language governing permissions and\n" +
-                        "limitations under the License."));
-
+                "https://github.com/AppIntro/AppIntro",getString(R.string.Apache)));
         licenseInfos.add(new LicenseInfo(
                 "CookieBar2",
-                "https://github.com/AviranAbady/CookieBar2",
-                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
-                        "you may not use this file except in compliance with the License.\n" +
-                        "You may obtain a copy of the License at\n" +
-                        "\n" +
-                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
-                        "\n" +
-                        "Unless required by applicable law or agreed to in writing, software\n" +
-                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
-                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
-                        "See the License for the specific language governing permissions and\n" +
-                        "limitations under the License."));
-
+                "https://github.com/AviranAbady/CookieBar2",getString(R.string.Apache)));
         licenseInfos.add(new LicenseInfo(
                 "material-code-input",
-                "https://github.com/raycoarana/material-code-input",
-                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
-                        "you may not use this file except in compliance with the License.\n" +
-                        "You may obtain a copy of the License at\n" +
-                        "\n" +
-                        "   http://www.apache.org/licenses/LICENSE-2.0\n" +
-                        "\n" +
-                        "Unless required by applicable law or agreed to in writing, software\n" +
-                        "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
-                        "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
-                        "See the License for the specific language governing permissions and\n" +
-                        "limitations under the License."));
-
+                "https://github.com/raycoarana/material-code-input", getString(R.string.Apache)));
         return licenseInfos;
     }
 }

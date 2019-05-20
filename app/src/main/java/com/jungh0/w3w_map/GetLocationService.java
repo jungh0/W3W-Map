@@ -1,5 +1,6 @@
 package com.jungh0.w3w_map;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -7,15 +8,16 @@ import android.os.IBinder;
 
 import org.aviran.cookiebar2.CookieBar;
 
-import static com.jungh0.w3w_map.MapsActivity.get_long;
-import static com.jungh0.w3w_map.MapsActivity.get_lati;
-
 
 //광천 추가 클래스
 public class GetLocationService extends Service {
 
+    static boolean is_geting = false; // 위치 추적할 때 온오프
+    static int get_location_first_move = 0; //위치 추적할 때 처음 한번은 카메라 이동하고 나중에 안함 - 0은 한번만 1은 안함 2는 계속
+    static double get_long, get_lati;
     Handler mHandler = null;
-    static Boolean switch_ = true;
+    //static Boolean switch_ = true;
+    Thread t = null;
 
     public GetLocationService() {
     }
@@ -34,7 +36,7 @@ public class GetLocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
        if(intent == null) {
-           return Service.START_STICKY;
+           return Service.START_NOT_STICKY;
        }
        else {
            processCommand(intent);
@@ -49,11 +51,14 @@ public class GetLocationService extends Service {
     }
 
     private void processCommand (Intent intent) {
-        switch_ = true;
+        //switch_ = true;
+        is_geting = true;
+        int first_move = intent.getIntExtra("first_move",0);
+        get_location_first_move = first_move;
         final String id = intent.getStringExtra("id");
 
         mHandler = new Handler();
-        Thread t = new Thread(new Runnable(){
+        t = new Thread(new Runnable(){
             @Override
             public void run() {
                 main_r(id);
@@ -62,7 +67,7 @@ public class GetLocationService extends Service {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                while (switch_) {
+                while (true) {
                     try {
                         main_r(id);
                         Thread.sleep(1000);
@@ -101,9 +106,10 @@ public class GetLocationService extends Service {
     }
 
     private void exit(){
-        switch_ = false;
-        MapsActivity.is_geting = false;
-        MapsActivity.get_location_first_move = 0;
+        t.interrupt();
+        //switch_ = false;
+        is_geting = false;
+        get_location_first_move = 0;
         Collection.ToastMD(getBaseContext(), "정보가 없습니다. 공유를 종료합니다.", 4);
         CookieBar.dismiss(MainActivity.main_act);
         stopSelf();

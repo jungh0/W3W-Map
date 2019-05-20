@@ -1,7 +1,6 @@
 package com.jungh0.w3w_map;
 
 import android.content.ContentValues;
-import android.os.AsyncTask;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -43,6 +42,7 @@ public class RequestHttpURLConnection {
 
     }
 
+    /*
     public class NetworkTask extends AsyncTask<Void, Void, String> {
 
         private String url;
@@ -65,5 +65,5 @@ public class RequestHttpURLConnection {
         protected void onPostExecute(String get_w3w) {
             super.onPostExecute(get_w3w);
         }
-    }
+    }*/
 }

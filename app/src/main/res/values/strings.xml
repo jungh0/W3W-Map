@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">W3W_Map</string>
+    <string name="app_name">WAY-W3W</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -15,4 +15,15 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+    <string name="Apache">Licensed under the Apache License, Version 2.0 (the "License")
+        \nyou may not use this file except in compliance with the License.
+        \nYou may obtain a copy of the License at
+        \n
+        \nhttp://www.apache.org/licenses/LICENSE-2.0
+        \n
+        \nUnless required by applicable law or agreed to in writing, software
+        \ndistributed under the License is distributed on an "AS IS" BASIS,
+        \nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        \nSee the License for the specific language</string>
 </resources>
