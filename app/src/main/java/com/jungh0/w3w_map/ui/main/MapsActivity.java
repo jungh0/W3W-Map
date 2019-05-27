@@ -1,4 +1,4 @@
-package com.jungh0.w3w_map;
+package com.jungh0.w3w_map.ui.main;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -36,9 +36,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.jungh0.w3w_map.Collection;
+import com.jungh0.w3w_map.R;
 import com.pepperonas.materialdialog.MaterialDialog;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import org.aviran.cookiebar2.CookieBar;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +49,7 @@ import org.json.JSONObject;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.jungh0.w3w_map.Collection.ToastMD;
 
-public class MapsActivity extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MapsActivity extends Fragment implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback{
     private GoogleMap mGoogleMap = null;
     private static final String TAG = "w3w_";
     String w3w_apikey = "CD39RHMH";
@@ -222,6 +225,13 @@ public class MapsActivity extends Fragment implements OnMapReadyCallback, Activi
         }).start();
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //CookieBar.dismiss(MainActivity.main_act);
+        //is_seting = false;
     }
 
     private void keyboard_enter(){

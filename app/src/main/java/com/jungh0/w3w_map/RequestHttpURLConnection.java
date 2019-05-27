@@ -10,8 +10,7 @@ import java.net.URL;
 
 public class RequestHttpURLConnection {
 
-    public String request(String _url, ContentValues _params) {
-
+    public String request(String _url) {
         try{
             URL Url = new URL(_url); // URL화 한다.
             HttpURLConnection conn = (HttpURLConnection) Url.openConnection(); // URL을 연결한 객체 생성.

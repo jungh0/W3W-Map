@@ -1,10 +1,12 @@
-package com.jungh0.w3w_map;
+package com.jungh0.w3w_map.ui.main;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+
+import com.jungh0.w3w_map.Collection;
+import com.jungh0.w3w_map.ui.main.MainActivity;
 
 import org.aviran.cookiebar2.CookieBar;
 

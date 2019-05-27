@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SplashActiviy">
+        <activity android:name=".ui.splash.SplashActiviy"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -28,12 +29,14 @@
             android:required="false" />
 
         <activity
-            android:name=".IntroActivity"
-            android:label="about"></activity>
+            android:name=".ui.intro.IntroActivity"
+            android:label="about"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:label="WAY"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <data android:host="start"
                     android:scheme="way_w3w" />
@@ -55,9 +58,10 @@
             android:value="AIzaSyCgniCssH8aAUGd25H84VZI8dGl7_ikGe4" />
 
         <service
-            android:name=".GetLocationService"
+            android:name=".ui.main.GetLocationService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

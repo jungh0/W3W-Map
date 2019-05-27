@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
+    tools:context=".ui.main.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
 
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.jungh0.w3w_map.MapsActivity"
+        android:name="com.jungh0.w3w_map.ui.main.MapsActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
