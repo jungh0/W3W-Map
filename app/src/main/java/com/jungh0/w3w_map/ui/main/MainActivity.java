@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.contact) {
             this.clip_copy("iveinvalue@gmail.com");
         } else if (id == R.id.version) {
-            this.showMaterialDialog("버전 정보","1.0.5(27)");
+            this.showMaterialDialog("버전 정보","1.0.6(28)");
         } else if (id == R.id.intro) {
             startActivity(new Intent(this, IntroActivity.class));
         } else if (id == R.id.location_share) {

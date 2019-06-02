@@ -15,7 +15,7 @@
         android:layout_marginLeft="20dp"
         android:hint="아이디"
         android:inputType="textPersonName"
-        android:text="palecosmos@github.com" />
+        android:text="hi@naver.com" />
 
     <EditText
         android:layout_below="@+id/id_edit"
@@ -26,7 +26,7 @@
         android:layout_marginLeft="20dp"
         android:hint="비밀번호"
         android:inputType="textPassword"
-        android:text="Ok00330246!" />
+        android:text="hi1234!P" />
 
     <Button
         android:layout_below="@+id/pass_edit"
