@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="10dp">
+
+
+    <EditText
+        android:id="@+id/id_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:hint="아이디"
+        android:inputType="textPersonName"
+        android:text="palecosmos@github.com" />
+
+    <EditText
+        android:layout_below="@+id/id_edit"
+        android:id="@+id/pass_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:hint="비밀번호"
+        android:inputType="textPassword"
+        android:text="Ok00330246!" />
+
+    <Button
+        android:layout_below="@+id/pass_edit"
+        android:id="@+id/go_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/red"
+        android:textColor="#ffffff"
+        android:text="로그인" />
+
+    <TextView
+        android:id="@+id/resi"
+        android:layout_below="@+id/go_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:textColor="@color/red"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:text="회원가입, 하실래요?"/>
+
+
+</RelativeLayout>

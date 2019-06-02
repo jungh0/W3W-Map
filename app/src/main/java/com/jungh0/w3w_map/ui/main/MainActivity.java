@@ -1,10 +1,15 @@
 package com.jungh0.w3w_map.ui.main;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.core.view.GravityCompat;
@@ -16,10 +21,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.jungh0.w3w_map.R;
+import com.jungh0.w3w_map.model.Fireuser;
 import com.jungh0.w3w_map.ui.intro.IntroActivity;
 import com.pepperonas.materialdialog.MaterialDialog;
 import com.pepperonas.materialdialog.model.LicenseInfo;
@@ -30,6 +41,8 @@ import org.aviran.cookiebar2.OnActionClickListener;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MainContract.View {
 
     private MainContract.Presenter mPresenter;
@@ -39,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static String set__id = "";
 
     Context main_cont;
-    //String s_data = null;
+    CircleImageView login_image;
+    TextView login_text;
     Intent service_intent;
 
     @Override
@@ -58,12 +72,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        mPresenter = new MainPresenter(this,this.getIntent());
+        mPresenter = new MainPresenter(this,this.getIntent(),MainActivity.this);
         mPresenter.check_deeplink();
 
         search = toolbar.findViewById(R.id.search);
+        View nav_header_view = navigationView.getHeaderView(0);
+        login_text = nav_header_view.findViewById(R.id.login_text);
+        login_image = nav_header_view.findViewById(R.id.login_image);
+        login_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.login_();
+            }
+        });
         main_act = MainActivity.this;
         main_cont = getApplicationContext();
+    }
+
+    public void change_login_info(Bitmap bit,String txt){
+        login_text.setText(txt);
+        if (bit == null){
+            Drawable d = getResources().getDrawable(R.drawable.user_login);
+            login_image.setImageDrawable(d);
+        }else{
+            login_image.setImageBitmap(bit);
+        }
+
     }
 
     @Override
@@ -85,17 +119,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.contact) {
             this.clip_copy("iveinvalue@gmail.com");
         } else if (id == R.id.version) {
-            this.showMaterialDialog("버전 정보","1.0.4(26)");
+            this.showMaterialDialog("버전 정보","1.0.5(27)");
         } else if (id == R.id.intro) {
             startActivity(new Intent(this, IntroActivity.class));
         } else if (id == R.id.location_share) {
             mPresenter.makeMaterialDialogShare();
         } else if (id == R.id.location_search) {
             mPresenter.makeMaterialDialogSearch(null);
+        } else if (id == R.id.myinfo) {
+            mPresenter.makemyinfo();
+        } else if (id == R.id.friend) {
+            mPresenter.makefriend();
         }
+        close_drawer();
+        return true;
+    }
+
+    public void close_drawer(){
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+    }
+
+    public void open_drawer(){
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.openDrawer(GravityCompat.START);
     }
 
     @Override
@@ -134,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.showMaterialDialog("","위치 추척이 취소되었습니다.");
     }
 
-
     @Override
     public void showMaterialDialogShare(MaterialDialog.ShowListener listener) {
         new MaterialDialog.Builder(this)
@@ -144,7 +190,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .show();
     }
 
-    private String[] ITEMS = new String[]{"터치 위치 수동 전송 (기본)", "현재 위치 자동 전송 (조작이 제한 됩니다.)"};
+    @Override
+    public void showMaterialDialogLogin(MaterialDialog.ShowListener listener) {
+        new MaterialDialog.Builder(this)
+                .title("로그인해주세요")
+                .customView(R.layout.login_dialog)
+                .showListener(listener)
+                .show();
+    }
+
+    @Override
+    public void showMaterialDialogLoading(Dialog.OnShowListener listener) {
+        Dialog builder = new Dialog(this);
+        builder.setTitle("Select The Difficulty Level");
+        builder.setContentView(R.layout.loading_dialog);
+        builder.setOnShowListener(listener);
+        builder.setCancelable(false);
+        builder.setCanceledOnTouchOutside(false);
+        builder.setCancelable(false);
+        builder.show();
+    }
+
+    private String[] ITEMS = new String[]{"터치 위치 수동 전송 (기본)", "현재 위치 자동 전송 (조작 제한)"};
     @Override
     public void showSelectMethod(MaterialDialog.ItemClickListener listener) {
         new MaterialDialog.Builder(this)
@@ -163,6 +230,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .message(str2)
                 .positiveText("확인")
                 .positiveColor(R.color.red)
+                .show();
+    }
+
+    @Override
+    public void showMaterialDialog_listen(String str, String str2,MaterialDialog.ButtonCallback listener) {
+        new MaterialDialog.Builder(this)
+                .title(str)
+                .message(str2)
+                .positiveText("확인")
+                .positiveColor(R.color.green)
+                .buttonCallback(listener)
                 .show();
     }
 
@@ -200,4 +278,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void showMaterialDialogList(final String[] list) {
+        new MaterialDialog.Builder(this)
+                .title("계정 정보")
+                .positiveText("닫기")
+                .positiveColor(R.color.red)
+                .listItems(true, list)
+                .itemSelectedListener(new MaterialDialog.ItemSelectedListener() {
+                    @Override
+                    public void onSelected(View view, int position, long id) {
+                        super.onSelected(view, position, id);
+                    }
+                })
+                .itemClickListener(new MaterialDialog.ItemClickListener() {
+                    @Override
+                    public void onClick(View v, final int position, long id) {
+                        super.onClick(v, position, id);
+
+                    }
+                })
+                .buttonCallback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        super.onNegative(dialog);
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    public void showMaterialDialogList_friend(final String[] list,MaterialDialog.ItemClickListener listenter) {
+        new MaterialDialog.Builder(this)
+                .title("친구 목록")
+                .positiveText("닫기")
+                .positiveColor(R.color.red)
+                .listItems(true, list)
+                .itemClickListener(listenter)
+                .show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Fireuser.logout();
+        FirebaseAuth.getInstance().signOut();
+    }
+
+    public void go_intent(){
+        try{
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("helu://start"));
+            startActivity(intent);
+        }catch (Exception e){
+            showMaterialDialog("회원가입","Helu 앱을 설치해주세요.");
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "com.pale_cosmos.helu")));
+        }
+
+    }
 }

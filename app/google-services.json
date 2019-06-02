@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "254418818805",
+    "firebase_url": "https://palecosmos-helu.firebaseio.com",
+    "project_id": "palecosmos-helu",
+    "storage_bucket": "palecosmos-helu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254418818805:android:dd909b0aebf25d3a",
+        "android_client_info": {
+          "package_name": "com.jungh0.w3w_map"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254418818805-1sv1sl1uaem2hmgpl6h64e366avqmhge.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATErl9uM_N1UWncgPAqE-KcMu31wAm-Ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254418818805-1sv1sl1uaem2hmgpl6h64e366avqmhge.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254418818805:android:77f2ea05faeefcc7",
+        "android_client_info": {
+          "package_name": "com.pale_cosmos.helu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254418818805-1e8qf2tjrhtiik7rlka1oc406p980f6s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pale_cosmos.helu",
+            "certificate_hash": "16054f300807dfff4854a3030daaa6e3e01168c4"
+          }
+        },
+        {
+          "client_id": "254418818805-1sv1sl1uaem2hmgpl6h64e366avqmhge.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATErl9uM_N1UWncgPAqE-KcMu31wAm-Ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254418818805-1sv1sl1uaem2hmgpl6h64e366avqmhge.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

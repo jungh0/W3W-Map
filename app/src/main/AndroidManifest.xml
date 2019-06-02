@@ -32,6 +32,7 @@
             android:name=".ui.intro.IntroActivity"
             android:label="about"
             android:screenOrientation="portrait"></activity>
+
         <activity
             android:name=".ui.main.MainActivity"
             android:label="WAY"

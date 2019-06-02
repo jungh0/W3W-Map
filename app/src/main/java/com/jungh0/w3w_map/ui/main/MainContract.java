@@ -1,5 +1,8 @@
 package com.jungh0.w3w_map.ui.main;
 
+import android.app.Dialog;
+import android.graphics.Bitmap;
+
 import com.pepperonas.materialdialog.MaterialDialog;
 import com.pepperonas.materialdialog.model.LicenseInfo;
 
@@ -33,6 +36,23 @@ public class MainContract {
 
         void stopService();
 
+        void close_drawer();
+
+        void change_login_info(Bitmap bit, String txt);
+
+        void showMaterialDialog_listen(String str, String str2,MaterialDialog.ButtonCallback listener);
+
+        void showMaterialDialogLogin(MaterialDialog.ShowListener listener);
+
+        void open_drawer();
+
+        void showMaterialDialogLoading(Dialog.OnShowListener listener);
+
+        void showMaterialDialogList(final String[] list);
+
+        void showMaterialDialogList_friend(final String[] list,MaterialDialog.ItemClickListener listenter);
+
+        void go_intent();
 
     }
 
@@ -46,6 +66,11 @@ public class MainContract {
 
         void makeMaterialDialogShare();
 
+        void login_();
+
+        void makemyinfo();
+
+        void makefriend();
 
     }
 

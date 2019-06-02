@@ -40,6 +40,18 @@
         </menu>
     </item>
 
+    <item android:title="계정">
+        <menu>
+            <item
+                android:id="@+id/myinfo"
+                android:icon="@drawable/myinfo"
+                android:title="계정 정보" />
+            <item
+                android:id="@+id/friend"
+                android:icon="@drawable/friend"
+                android:title="친구 목록" />
+        </menu>
+    </item>
 
     <item android:title="정보">
         <menu>
