@@ -1,11 +1,11 @@
 # W3W_Map
 
-https://play.google.com/store/apps/details?id=com.jungh0.w3w_map
+<pre><a href="https://play.google.com/store/apps/details?id=com.jungh0.w3w_map">https://play.google.com/store/apps/details?id=com.jungh0.w3w_map</a></pre>
+
 
 **W3W_MAP** is a real-time location sharing service app that lets you display and share locations based on three words. 
 
 screenshot
-
 <br>
 <img src='https://github.com/iveinvalue/W3W_Map/blob/master/resource/screenshot/1.png' width='200px'/>
 <img src='https://github.com/iveinvalue/W3W_Map/blob/master/resource/screenshot/2.png' width='200px'/>
