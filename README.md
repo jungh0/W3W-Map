@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 </br>
 
-<pre><a href="https://play.google.com/store/apps/details?id=com.jungh0.w3w_map">~~https://play.google.com/store/apps/details?id=com.jungh0.w3w_map~~</a></pre>
+<pre><a href="https://play.google.com/store/apps/details?id=com.jungh0.w3w_map"><STRIKE>https://play.google.com/store/apps/details?id=com.jungh0.w3w_map</STRIKE></a></pre>
 
 <img alt="icon" src="https://user-images.githubusercontent.com/8678595/66832108-25ce8300-ef94-11e9-91be-d027c110dd49.png" align="right" width="25%">
 
