@@ -16,11 +16,6 @@
   - From the menu, click Track Location
   - If a link is provided through a location sharer, the location number is automatically entered. If not, enter it manually.
   - Real-time location tracking begins
-- [x] Account (With HELU app)
-  - If you install HELU app, you can link it with this app
-  - If you installed the HELU app, you can bring up your friend list
-  - If you installed the HELU app, you can check your account information
-
 
 ## Introduction
 **A real-time location sharing service app that lets you display and share locations based on three words.**
